@@ -1,9 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define forr(i,a,b) for(int i=(a);i<(b);++i)
+#define forr(i,a,b) for(int i=int(a);i<int(b);++i)
 #define forn(i,n) forr(i,0,n)
-#define dforr(i,a,b) for(int i=(b)-1;i>=(a);--i)
+#define dforr(i,a,b) for(int i=int(b)-1;i>=int(a);--i)
 #define dforn(i,n) dforr(i,0,n)
 #define db(v) cerr<<#v" = "<<(v)<<'\n'
 #define vecp(v) cerr<<#v<<" = "; for(auto ee:v)cerr<<ee<<' '; cerr<<'\n'
