@@ -23,3 +23,13 @@ public:
     std::shuffle(first,last,_mt);
   }
 }rng;
+
+class time_keeper{
+  std::chrono::steady_clock::time_point _t0;
+public:
+  time_keeper():_t0(std::chrono::steady_clock::now()){}
+  double elapsed_time(){
+    std::chrono::steady_clock::time_point t1=std::chrono::steady_clock::now();
+    return std::chrono::duration<double,std::milli>(t1-_t0).count();
+  }
+}timer;
