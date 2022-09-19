@@ -60,50 +60,58 @@ template<typename Object,typename Change,typename Energy>
 class simulated_annealing{
 
 	typedef function<Energy(Object&)>InitializationFunction;
-	typedef function<const Change(const Object&)>NeighborFunction;
-	typedef function<void(Object&,const Change&)>ApplicationFunction;
-	typedef function<Energy(const Object&,const Change&)>EnergyFunction;
-	typedef function<double(double)>TemperatureFunction;
-	typedef function<double(Energy,Energy,double)>AcceptanceFunction;
 
 	Object obj;
 	Energy curr_energy, lowest_energy;
-	NeighborFunction neighbor;
-	ApplicationFunction apply;
-	EnergyFunction energy;
-	TemperatureFunction temperature;
-	AcceptanceFunction accept;
+
+	void set_initial_state() {
+		// TODO
+		// Debe initializar a `obj` con un nuevo estado válido (si es que no se hizo antes),
+		// y setear a `curr_energy` y `lowest_energy` en base al nuevo estado del objeto
+		// (originalmente deben ser iguales)
+	}
+
+	const Change neighbor() const& {
+		// TODO
+		// Usa a `obj` para obtener un nuevo cambio de estado, pero no debe modificar a `obj`.
+	}
+
+	void apply(const Change& change) {
+		// TODO
+		// Aplica el cambio `change` al estado `obj`.
+	}
+
+	Energy energy(const Change& change) const& {
+		// TODO
+		// Retorna la energía asociada al cambio de estado dado. No modifica nada.
+	}
+
+	double temperature(const double percentage_left) {
+		// TODO
+		// Se puede dejar así o cambiar (por ejemplo, retornando una constante por el
+		// valor `percentage_left`) dependiendo del problema.
+		return percentage_left;
+	}
+
+	double accept(
+		const Energy old_energy,
+		const Energy new_energy,
+		const double temp
+	) {
+		return (
+			new_energy < old_energy ?
+			1.0 :
+			exp(static_cast<double>(old_energy - new_energy) / temp)
+		);
+	}
 
 public:
 
-	simulated_annealing(
-		Object&& _obj,
-		InitializationFunction&& _initialize,
-		NeighborFunction&& _neighbor,
-		ApplicationFunction&& _apply,
-		EnergyFunction&& _energy,
-		TemperatureFunction&& _temperature=[](double percentage_left) -> double {
-			return percentage_left;
-		},
-		AcceptanceFunction&& _accept=[](
-			Energy old_energy, Energy new_energy, double temp
-		) -> double {
-			return (
-				new_energy < old_energy ?
-				1.0 :
-				exp(static_cast<double>(old_energy - new_energy) / temp)
-			);
-		}
-	):
-		obj(forward<Object>(_obj)),
-		curr_energy(_initialize(obj)),
-		lowest_energy(curr_energy),
-		neighbor(forward<NeighborFunction>(_neighbor)),
-		apply(forward<ApplicationFunction>(_apply)),
-		energy(forward<EnergyFunction>(_energy)),
-		temperature(forward<TemperatureFunction>(_temperature)),
-		accept(forward<AcceptanceFunction>(_accept))
-	{}
+	simulated_annealing(Object&& _obj):
+		obj(forward<Object>(_obj))
+	{
+		set_initial_state();
+	}
 
 	simulated_annealing& simulate(const double duration_limit=500) {
 		const double initial_time=timer.elapsed_time();
@@ -112,12 +120,12 @@ public:
 			elapsed_time < duration_limit;
 			elapsed_time = timer.elapsed_time() - initial_time
 		) {
-			double temp = temperature(1 - elapsed_time / duration_limit);
-			Change new_change = neighbor(obj);
-			Energy new_energy = energy(obj, new_change);
+			const double temp = temperature(1 - elapsed_time / duration_limit);
+			const Change new_change = neighbor();
+			const Energy new_energy = energy(new_change);
 			lowest_energy = min(lowest_energy, new_energy);
 			if(accept(curr_energy, new_energy, temp) >= rng.random_real(1)) {
-				apply(obj, new_change);
+				apply(new_change);
 				curr_energy = new_energy;
 			}
 		}
