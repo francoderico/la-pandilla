@@ -58,66 +58,77 @@ timer;
 
 template<typename Object,typename Change,typename Energy>
 class simulated_annealing{
+
 	typedef function<Energy(Object&)>InitializationFunction;
 	typedef function<const Change(const Object&)>NeighborFunction;
 	typedef function<void(Object&,const Change&)>ApplicationFunction;
 	typedef function<Energy(const Object&,const Change&)>EnergyFunction;
 	typedef function<double(double)>TemperatureFunction;
 	typedef function<double(Energy,Energy,double)>AcceptanceFunction;
-	Object _obj;
-	Energy _curr_energy,_lowest_energy;
-	NeighborFunction _neighbor;
-	ApplicationFunction _apply;
-	EnergyFunction _energy;
-	TemperatureFunction _temperature;
-	AcceptanceFunction _accept;
+
+	Object obj;
+	Energy curr_energy, lowest_energy;
+	NeighborFunction neighbor;
+	ApplicationFunction apply;
+	EnergyFunction energy;
+	TemperatureFunction temperature;
+	AcceptanceFunction accept;
+
 public:
+
 	simulated_annealing(
-		Object&&obj,
-		InitializationFunction&&initialize,
-		NeighborFunction&&neighbor,
-		ApplicationFunction&&apply,
-		EnergyFunction&&energy,
-		TemperatureFunction&&temperature=[](double percentage_left)->double{
+		Object&& _obj,
+		InitializationFunction&& _initialize,
+		NeighborFunction&& _neighbor,
+		ApplicationFunction&& _apply,
+		EnergyFunction&& _energy,
+		TemperatureFunction&& _temperature=[](double percentage_left) -> double {
 			return percentage_left;
 		},
-		AcceptanceFunction&&accept=[](
-			Energy old_energy,Energy new_energy,double temp
-		)->double{
+		AcceptanceFunction&& _accept=[](
+			Energy old_energy, Energy new_energy, double temp
+		) -> double {
 			return (
-				new_energy<old_energy?
-				1.0:
-				exp(static_cast<double>(old_energy-new_energy)/temp)
+				new_energy < old_energy ?
+				1.0 :
+				exp(static_cast<double>(old_energy - new_energy) / temp)
 			);
 		}
 	):
-		_obj(forward<Object>(obj)),
-		_curr_energy(initialize(_obj)),
-		_lowest_energy(_curr_energy),
-		_neighbor(forward<NeighborFunction>(neighbor)),
-		_apply(forward<ApplicationFunction>(apply)),
-		_energy(forward<EnergyFunction>(energy)),
-		_temperature(forward<TemperatureFunction>(temperature)),
-		_accept(forward<AcceptanceFunction>(accept))
+		obj(forward<Object>(_obj)),
+		curr_energy(_initialize(obj)),
+		lowest_energy(curr_energy),
+		neighbor(forward<NeighborFunction>(_neighbor)),
+		apply(forward<ApplicationFunction>(_apply)),
+		energy(forward<EnergyFunction>(_energy)),
+		temperature(forward<TemperatureFunction>(_temperature)),
+		accept(forward<AcceptanceFunction>(_accept))
 	{}
-	simulated_annealing&simulate(const double duration_limit=500){
+
+	simulated_annealing& simulate(const double duration_limit=500) {
 		const double initial_time=timer.elapsed_time();
 		for(
-			double elapsed_time=timer.elapsed_time()-initial_time;
-			elapsed_time<duration_limit;
-			elapsed_time=timer.elapsed_time()-initial_time
-		){
-			double temp=_temperature(1-elapsed_time/duration_limit);
-			Change new_change=_neighbor(_obj);
-			Energy new_energy=_energy(_obj,new_change);
-			_lowest_energy=min(_lowest_energy,new_energy);
-			if(_accept(_curr_energy,new_energy,temp)>=rng.random_real(1)){
-				_apply(_obj,new_change);
-				_curr_energy=new_energy;
+			double elapsed_time = timer.elapsed_time() - initial_time;
+			elapsed_time < duration_limit;
+			elapsed_time = timer.elapsed_time() - initial_time
+		) {
+			double temp = temperature(1 - elapsed_time / duration_limit);
+			Change new_change = neighbor(obj);
+			Energy new_energy = energy(obj, new_change);
+			lowest_energy = min(lowest_energy, new_energy);
+			if(accept(curr_energy, new_energy, temp) >= rng.random_real(1)) {
+				apply(obj, new_change);
+				curr_energy = new_energy;
 			}
 		}
 		return *this;
 	}
-	const Object&last_state()const&{return _obj;}
-	const Energy lowest_energy()const&{return _lowest_energy;}
+
+	const Object& get_last_state() const& {
+		return obj;
+	}
+
+	const Energy get_lowest_energy() const& {
+		return lowest_energy;
+	}
 };
