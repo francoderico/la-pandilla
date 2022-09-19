@@ -6,37 +6,55 @@
 using namespace std;
 using my_clock = chrono::steady_clock;
 
-class random_number_generator{
-	mt19937 _mt;
-public:
-	random_number_generator():_mt(
-		static_cast<mt19937::result_type>(
-			my_clock::now().time_since_epoch().count()
-		)
-	){}
-	int random_int(int n){return random_int(0,n);}
-	int random_int(int a,int b){
-		return uniform_int_distribution<int>(a,b-1)(_mt);
-	}
-	double random_real(double n){return random_real(0.0,n);}
-	double random_real(double a,double b){
-		return uniform_real_distribution<double>(a,b)(_mt);
-	}
-	template<typename RandomIt>
-	void shuffle(RandomIt first,RandomIt last){
-		std::shuffle(first,last,_mt);
-	}
-}rng;
+class random_number_generator {
 
-class time_keeper{
-	my_clock::time_point _t0;
+	mt19937 mt;
+
 public:
-	time_keeper():_t0(my_clock::now()){}
-	double elapsed_time(){
-		my_clock::time_point t1=my_clock::now();
-		return chrono::duration<double,milli>(t1-_t0).count();
+
+	random_number_generator():
+		mt(my_clock::now().time_since_epoch().count())
+	{}
+
+	int random_int(int n) {
+		return random_int(0, n);
 	}
-}timer;
+
+	int random_int(int a, int b) {
+		return uniform_int_distribution<>(a, b-1)(mt);
+	}
+
+	double random_real(double n) {
+		return random_real(0.0, n);
+	}
+
+	double random_real(double a, double b) {
+		return uniform_real_distribution<>(a, b)(mt);
+	}
+
+	template<typename RandomIt>
+	void shuffle(RandomIt first, RandomIt last) {
+		std::shuffle(first, last, mt);
+	}
+}
+rng;
+
+class time_keeper {
+
+	my_clock::time_point t0;
+
+public:
+
+	time_keeper():
+		t0(my_clock::now())
+	{}
+
+	double elapsed_time() {
+		my_clock::time_point t1 = my_clock::now();
+		return chrono::duration<double, milli>(t1 - t0).count();
+	}
+}
+timer;
 
 template<typename Object,typename Change,typename Energy>
 class simulated_annealing{
