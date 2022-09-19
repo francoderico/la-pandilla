@@ -3,21 +3,23 @@
 #include <functional>
 #include <random>
 
+using namespace std;
+
 class random_number_generator{
-  std::mt19937 _mt;
+  mt19937 _mt;
 public:
   random_number_generator():_mt(
-    static_cast<std::mt19937::result_type>(
-      std::chrono::steady_clock::now().time_since_epoch().count()
+    static_cast<mt19937::result_type>(
+      chrono::steady_clock::now().time_since_epoch().count()
     )
   ){}
   int random_int(int n){return random_int(0,n);}
   int random_int(int a,int b){
-    return std::uniform_int_distribution<int>(a,b-1)(_mt);
+    return uniform_int_distribution<int>(a,b-1)(_mt);
   }
   double random_real(double n){return random_real(0.0,n);}
   double random_real(double a,double b){
-    return std::uniform_real_distribution<double>(a,b)(_mt);
+    return uniform_real_distribution<double>(a,b)(_mt);
   }
   template<typename RandomIt>
   void shuffle(RandomIt first,RandomIt last){
@@ -26,23 +28,23 @@ public:
 }rng;
 
 class time_keeper{
-  std::chrono::steady_clock::time_point _t0;
+  chrono::steady_clock::time_point _t0;
 public:
-  time_keeper():_t0(std::chrono::steady_clock::now()){}
+  time_keeper():_t0(chrono::steady_clock::now()){}
   double elapsed_time(){
-    std::chrono::steady_clock::time_point t1=std::chrono::steady_clock::now();
-    return std::chrono::duration<double,std::milli>(t1-_t0).count();
+    chrono::steady_clock::time_point t1=chrono::steady_clock::now();
+    return chrono::duration<double,milli>(t1-_t0).count();
   }
 }timer;
 
 template<typename Object,typename Change,typename Energy>
 class simulated_annealing{
-  typedef std::function<Energy(Object&)>InitializationFunction;
-  typedef std::function<const Change(const Object&)>NeighborFunction;
-  typedef std::function<void(Object&,const Change&)>ApplicationFunction;
-  typedef std::function<Energy(const Object&,const Change&)>EnergyFunction;
-  typedef std::function<double(double)>TemperatureFunction;
-  typedef std::function<double(Energy,Energy,double)>AcceptanceFunction;
+  typedef function<Energy(Object&)>InitializationFunction;
+  typedef function<const Change(const Object&)>NeighborFunction;
+  typedef function<void(Object&,const Change&)>ApplicationFunction;
+  typedef function<Energy(const Object&,const Change&)>EnergyFunction;
+  typedef function<double(double)>TemperatureFunction;
+  typedef function<double(Energy,Energy,double)>AcceptanceFunction;
   Object _obj;
   Energy _curr_energy,_lowest_energy;
   NeighborFunction _neighbor;
@@ -70,14 +72,14 @@ public:
       );
     }
   ):
-    _obj(std::forward<Object>(obj)),
+    _obj(forward<Object>(obj)),
     _curr_energy(initialize(_obj)),
     _lowest_energy(_curr_energy),
-    _neighbor(std::forward<NeighborFunction>(neighbor)),
-    _apply(std::forward<ApplicationFunction>(apply)),
-    _energy(std::forward<EnergyFunction>(energy)),
-    _temperature(std::forward<TemperatureFunction>(temperature)),
-    _accept(std::forward<AcceptanceFunction>(accept))
+    _neighbor(forward<NeighborFunction>(neighbor)),
+    _apply(forward<ApplicationFunction>(apply)),
+    _energy(forward<EnergyFunction>(energy)),
+    _temperature(forward<TemperatureFunction>(temperature)),
+    _accept(forward<AcceptanceFunction>(accept))
   {}
   simulated_annealing&simulate(const double duration_limit=500){
     const double initial_time=timer.elapsed_time();
