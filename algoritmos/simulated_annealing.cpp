@@ -4,13 +4,14 @@
 #include <random>
 
 using namespace std;
+using my_clock = chrono::steady_clock;
 
 class random_number_generator{
 	mt19937 _mt;
 public:
 	random_number_generator():_mt(
 		static_cast<mt19937::result_type>(
-			chrono::steady_clock::now().time_since_epoch().count()
+			my_clock::now().time_since_epoch().count()
 		)
 	){}
 	int random_int(int n){return random_int(0,n);}
@@ -28,11 +29,11 @@ public:
 }rng;
 
 class time_keeper{
-	chrono::steady_clock::time_point _t0;
+	my_clock::time_point _t0;
 public:
-	time_keeper():_t0(chrono::steady_clock::now()){}
+	time_keeper():_t0(my_clock::now()){}
 	double elapsed_time(){
-		chrono::steady_clock::time_point t1=chrono::steady_clock::now();
+		my_clock::time_point t1=my_clock::now();
 		return chrono::duration<double,milli>(t1-_t0).count();
 	}
 }timer;
