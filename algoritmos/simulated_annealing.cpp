@@ -107,8 +107,8 @@ class simulated_annealing{
 
 public:
 
-	simulated_annealing(Object&& _obj):
-		obj(forward<Object>(_obj))
+	simulated_annealing(const Object& _obj):
+		obj(_obj)
 	{
 		set_initial_state();
 	}
