@@ -31,47 +31,46 @@ const ld PI = acosl(-1);
 
 
 
+
 struct Lazy {
-	int x;
+	ll x;
+	static Lazy zero() { return {0}; } // neutro de la suma
+	bool is_zero() { return x == 0; } // moralmente `*this == Lazy::zero()`
 };
 
 struct Mono {
-	int x, c;
-	Lazy lazy;
-	static Mono zero() { return {0,0,{0}}; }
-	bool has_lazy() { return lazy.x != 0; }
-	void add_lazy(Lazy l) { lazy.x += l.x; }
-	void clear_lazy() { lazy.x = 0; }
-	void apply_lazy(int l, int r) { x += lazy.x; }
+	ll x, c;
+	static Mono zero() { return {INT_MAX, 0}; } // neutro de la suma
+	void apply_lazy(Lazy d, int l, int r) { x += d.x; }
 };
 
+Lazy operator+ (Lazy a, Lazy b) { return {a.x + b.x}; } // asociativo
 Mono operator+ (Mono a, Mono b) {
-	assert(!a.has_lazy());
-	assert(!b.has_lazy());
 	if (a.x < b.x) return a;
 	if (b.x < a.x) return b;
-	return {a.x, a.c+b.c, {0}};
+	return {a.x, a.c+b.c};
 }
+
 
 struct SegtreeLazy {
 	static constexpr int log2n = 17;
 	static constexpr int ln = 1<<log2n;
 	static constexpr int sz = ln<<1;
 
-	vector<Mono> data;
-
-	SegtreeLazy() : data(sz) {
-	}
+	vector<Mono> data; vector<Lazy> lazy;
+	SegtreeLazy() : data(sz), lazy(sz) { }
 
 	// O(N)
 	// inicia la estructura
 	void init_all() {
 		forn(i, sz) data[i] = Mono::zero();
+		forn(i, sz) lazy[i] = Lazy::zero();
 	}
 
 	// O(1)
 	// asigna un valor sin actualizar la estructura
 	// se usa con init_inner para hacer O(N) point updates en O(N)
+	// NO TOMA EN CUENTA LAZY UPDATES PENDIENTES
 	void assign_unsafe(int i, Mono x) {
 		i += ln; data[i] = x;
 	}
@@ -103,13 +102,13 @@ struct SegtreeLazy {
 	int ql, qr;
 
 	void p_(int i, int l, int r) {
-		if (!data[i].has_lazy()) return;
-		data[i].apply_lazy(l, r);
+		if (lazy[i].is_zero()) return;
 		if (i < ln) {
-			data[2*i].add_lazy(data[i].lazy);
-			data[2*i+1].add_lazy(data[i].lazy);
+			lazy[2*i] = lazy[2*i] + lazy[i];
+			lazy[2*i+1] = lazy[2*i+1] + lazy[i];
 		}
-		data[i].clear_lazy();
+		data[i].apply_lazy(lazy[i], l, r);
+		lazy[i] = Lazy::zero();
 	}
 
 	Mono q_(int i, int l, int r) {
@@ -126,7 +125,7 @@ struct SegtreeLazy {
 		p_(i,l,r);
 		if (r <= ql || qr <= l) return;
 		if (ql <= l && r <= qr) {
-			data[i].add_lazy(x);
+			lazy[i] = lazy[i] + x;
 			p_(i,l,r);
 			return;
 		}
@@ -135,6 +134,7 @@ struct SegtreeLazy {
 		data[i] = data[2*i] + data[2*i+1];
 	}
 };
+
 
 
 
@@ -148,14 +148,14 @@ struct sweep { ll x0, x1, y, v; };
 
 ll cant_ceros(int l, int r) {
 	Mono res = st.query(l, r);
-	assert(!res.has_lazy());
 	if (res.x != 0) return 0;
 	return res.c;
 }
 
 ll area_union(vector<rect> const& rects) {
 
-	forn(i, st.ln) st.assign_unsafe(i, {0, 1, {0}});
+	st.init_all();
+	forn(i, st.ln) st.assign_unsafe(i, {0, 1});
 	st.init_inner();
 
 	vector<sweep> lines;
