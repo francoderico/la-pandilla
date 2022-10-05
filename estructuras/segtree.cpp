@@ -1,56 +1,37 @@
-template<typename Monoid>
+struct Mono {
+	// TODO agregar data
+	static Mono zero() { /* TODO */ } // neutro de la suma
+};
+Mono operator+ (Mono a, Mono b) { /* TODO */ } // asociativo
+
 struct Segtree {
-	int const log2n, ln, sz;
-	vector<Monoid> data;
+	static constexpr int log2n = 17; // TODO
+	static constexpr int len = 1<<log2n, sze = 1<<(log2n+1);
+	vector<Mono> data;
+	Segtree() : data(sze) { }
 
-	Segtree(int log2n)
-		:log2n{log2n}
-		,ln{1 << log2n}
-		,sz{1 << (log2n+1)}
-		,data(1 << (log2n+1))
-		{}
-
-	// O(N)
-	// inicia la estructura
-	void init() {
-		forn(i, sz) data[i] = Monoid::zero();
+	// inicia con los valores dados O(n+len)
+	void init(Mono* a, int n) {
+		forn(i, sze) data[i] = Mono::zero();
+		forn(i, n) data[i+len] = a[i];
+		dforr(i, 1, len) data[i] = data[i*2] + data[i*2+1];
 	}
 
-	// O(1)
-	// asigna un valor sin actualizar la estructura
-	// se usa con update_all para hacer O(N) point updates en O(N)
-	void assign_no_update(int i, Monoid x) {
-		i += ln; data[i] = x;
+	// point update O(log(len))
+	void update(int i, Mono x) {
+		i += len; data[i] = x;
+		while (i /= 2) data[i] = data[i*2] + data[i*2+1];
 	}
 
-	// O(N)
-	// recalcula todos los nodos internos de la estructura
-	void update_all() {
-		for (int i = ln; --i;)
-			data[i] = data[i*2] + data[i*2+1];
-	}
-
-	// O(logN)
-	// update en punto
-	void update(int i, Monoid x) {
-		i += ln; data[i] = x;
-		while (i /= 2)
-			data[i] = data[i*2] + data[i*2+1];
-	}
-
-	// O(logN)
-	// query en rango
-	Monoid query(int l, int r) {
-		ql = l; qr = r;
-		return query_(1, 0, ln);
-	}
+	// range query O(log(len))
+	Mono query(int l, int r) { ql = l; qr = r; return q_(1, 0, len); }
 
 private:
 	int ql, qr;
-	Monoid query_(int i, int l, int r) {
+	Mono q_(int i, int l, int r) {
+		if (r <= ql || qr <= l) return Mono::zero();
 		if (ql <= l && r <= qr) return data[i];
-		if (r <= ql || qr <= l) return Monoid::zero();
 		int m = (l+r)/2;
-		return query_(i*2,l,m) + query_(i*2+1,m,r);
+		return q_(i*2,l,m) + q_(i*2+1,m,r);
 	}
 };
