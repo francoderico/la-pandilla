@@ -1,4 +1,4 @@
-// Codeforces 101845D
+// https://codeforces.com/gym/101845/problem/D
 #include <bits/stdc++.h>
 using namespace std;
 
