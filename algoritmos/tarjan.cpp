@@ -20,12 +20,15 @@ void dfs(int v)
         low[v] = min(low[v], low[x]);
     }
 
-    if(low[v] == tag) while(1)
+    if(low[v] == tag)
     {
-        int x = s.top(); s.pop();
-        scc[x] = tag;
-        if(x == v) break;
+        while(1)
+        {
+            int x = s.top(); s.pop();
+            scc[x] = cant;
+            if(x == v) break;
+        }
+
+        cant ++;
     }
-    
-    cant ++;
 }
