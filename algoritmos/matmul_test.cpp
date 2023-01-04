@@ -17,7 +17,15 @@ struct matrix {
 	int size() { return n; }
 };
 
-matrix matmul_naive(matrix& a, matrix& b) {
+matrix matmul_slow(matrix& a, matrix& b) {
+	assert(a.size() == b.size());
+	matrix result(a.size());
+	forr(i,0,n) forr(j,0,n) forr(k,0,n)
+		result(i, j) += a(i, k) * b(k, j);
+	return result;
+}
+
+matrix matmul_simple(matrix& a, matrix& b) {
 	assert(a.size() == b.size());
 	matrix result(a.size());
 	forr(i,0,n) forr(k,0,n) forr(j,0,n)
@@ -53,7 +61,7 @@ int main() {
 	}
 
 	matrix c = matmul(a, b);
-	matrix d = matmul_naive(a, b);
+	matrix d = matmul_simple(a, b);
 
 	int result_c = 0;
 	int result_d = 0;
