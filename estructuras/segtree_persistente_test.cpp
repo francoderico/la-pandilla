@@ -31,29 +31,31 @@ const int BITCOUNT = 19;
 const int MAXBIT = BITCOUNT-1;
 const int MAXVAL = 1<<BITCOUNT;
 const int MAXN = 5e5+100;
-const int STLEN = MAXVAL;
+
+const int LOG2N  = BITCOUNT;
+const int STLEN = 1<<LOG2N;
 
 struct Mono {
 	int x;
-	static Mono zero() { return {0}; }
+	static Mono zero() { return {0}; } // neutro de la suma
 };
-
-Mono operator+ (Mono a, Mono b) { return {a.x + b.x}; }
+Mono operator+ (Mono a, Mono b) { return {a.x + b.x}; } // asociativo
 
 struct N {
-	N(Mono x_, N const* l_, N const* r_) : x{x_}, l{l_}, r{r_} {}
-	Mono const x; N const* l; N const* r;
+	N(Mono x_, N* l_, N* r_)
+	: x{x_}, l{l_}, r{r_} {}
+	Mono x; N* l; N* r;
 };
-
 N empty_node(Mono::zero(), &empty_node, &empty_node);
 
+// optimizacion: >30% mas rapido que 'new N(x,l,r)'
 deque<N> st_alloc;
-N const* make_node(Mono x, N const* l, N const* r) {
+N* make_node(Mono x, N* l, N* r) {
 	st_alloc.emplace_back(x, l, r);
 	return &st_alloc.back();
 }
 
-N const* u_(N const* t, int l, int r, int i, Mono x) {
+N* u_(N* t, int l, int r, int i, Mono x) {
 	if (i+1 <= l || r <= i) return t;
 	if (r-l == 1) return make_node(t->x + x, nullptr, nullptr);
 	int m = (l+r)/2;
@@ -63,21 +65,20 @@ N const* u_(N const* t, int l, int r, int i, Mono x) {
 }
 
 int ql, qr;
-Mono q_(N const* t, int l, int r) {
+Mono q_(N* t, int l, int r) {
 	if (qr <= l || r <= ql) return Mono::zero();
 	if (l <= ql && qr <= r) return t->x;
 	int m = (l+r)/2;
 	return q_(t->l, l, m) + q_(t->r, m, r);
 }
 
-Mono query(N const* t, int l, int r) {
-	ql = l; qr = r;
-	return q_(t, 0, STLEN);
-}
+// suma en rango:  t[l,r)
+Mono query(N* t, int l, int r) { ql = l; qr = r; return q_(t, 0, STLEN); }
 
-N const* update(N const* t, int i, Mono x) {
-	return u_(t, 0, STLEN, i, x);
-}
+// asignacion en punto:  t[i]=x
+N* update(N* t, int i, Mono x) { return u_(t, 0, STLEN, i, x); }
+
+
 
 int query(N const* a, N const* b, int l, int r, int x, int bit) {
 	assert(b->x.x - a->x.x > 0);
@@ -97,7 +98,7 @@ int query(N const* a, N const* b, int l, int r, int x, int bit) {
 }
 
 int vidx = 0;
-N const* version[MAXN];
+N* version[MAXN];
 
 void op0(int x) {
 	assert(x < STLEN);
