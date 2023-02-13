@@ -1,7 +1,7 @@
 #include<bits/stdc++.h>
 
-const int logn  = 19;
-const int STLEN = 1<<logn;
+const int LOG2N  = 19; // ceil(log2(MAXN))
+const int STLEN = 1<<LOG2N;
 
 struct Mono {
 	// TODO agregar data
