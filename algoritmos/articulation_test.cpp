@@ -41,33 +41,34 @@ void dfs(int v)
 {
     vis[v] = true;
     tag[v] = low[v] = idx ++;
-    int hijos = 0;
 
-    for(auto x : g[v])
+    for(auto x : g[v]) if(x != parent[v])
     {
         if(not vis[x])
         {
             parent[x] = v;
-            if(parent[v] == -1) hijos ++;
 
             dfs(x);
-            
+
             if(low[x] >= tag[v]) art[v] = true;
             low[v] = min(low[v], low[x]);
         }
-        else if(v != parent[x])
+        else
         {
             low[v] = min(low[v], tag[x]);
         }
     }
+}
 
-    //Caso especial de la raíz
-    //Si tiene más de un hijo en el DFS tree, es de articulación.
-    if(parent[v] == -1)
-    {
-        if(hijos > 1) art[v] = true;
-        else          art[v] = false;
-    }
+void articulation(int v)    //Uso: forn(i, n) if(not vis[i]) articulation(i);
+{
+    dfs(v);
+    
+    int hijos = 0;
+    for(auto x : g[v]) if(parent[x] == v) hijos ++;
+
+    if(hijos > 1) art[v] = true;
+    else          art[v] = false;
 }
 
 
@@ -82,7 +83,7 @@ void solve()
         g[a].pb(b), g[b].pb(a);
     }
     
-    dfs(0);
+    articulation(0);
 
     int ans = 0;
     forn(i, n) if(art[i]) ans ++;
