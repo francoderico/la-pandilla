@@ -1,3 +1,5 @@
+// https://codeforces.com/gym/100199/problem/B
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -104,52 +106,75 @@ struct Dinic
 };
 
 
-ll M[MAXN];             //suma(l entrantes) - suma(l salientes)   --  se llena en feasible
+//Feasible (red fuertemente conexa con restricciones de mínimo y máximo en cada arista)
+ll demand[MAXN];        //Si el nodo i requiere que salga 2 de flujo más de lo que entra seteo demand[i] = -2, si requiere que salga 2 menos de lo que entra (se come el flujo) seteo demand[i] = 2
+ll M[MAXN];             //dif[i] - (suma(l entrantes) - suma(l salientes)).   -- se llena en feasible
 int a[MAXM], b[MAXM];   //aristas a[i]-b[i]
 ll l[MAXM], u[MAXM];    //con capacidad mínima l[i] y máxima u[i]
-ll mando[MAXM];         //Cuánto flujo mando por cada arista
-map<pii, int> ind;      //Para cada arista u-v, me da su i tal que a[i] = u y b[i] = v
+ll mando[MAXM];         //Cuánto flujo mando por cada arista        -- se llena en feasible
+map<pii, int> ind;      //Para cada arista u-v, me da su i tal que a[i] = u y b[i] = v      -- se llena en feasible
 
-
-//Chequea si una SCC de flujo, sin s ni t, con restricciones de capacidades mínimas y máximas en cada arista
-//tiene algún flujo válido, y lo reconstruye en el array mando
+//Chequea si una red de flujo fuertemente conexa, sin s ni t, con restricciones de capacidades
+//mínimas y máximas en cada arista tiene algún flujo válido, y lo reconstruye en el array mando
 //n = cantidad de nodos
 //m = cantidad de aristas
 bool feasible(Dinic& ne, int n, int m)
 {
-    forn(i, m)
+	forn(i, n) M[i] = demand[i];
+
+	forn(i, m)
     {
         ne.add_edge(a[i], b[i], u[i]-l[i]); //Agregamos la arista con capacidad u-l
-        M[a[i]] -= l[i];
-        M[b[i]] += l[i];
+        M[a[i]] += l[i];
+        M[b[i]] -= l[i];
 
         ind[{a[i], b[i]}] = i;
     }
 
-    int s = n, t = n+1, nodes = n+2;
+    int s_ = n, t_ = n+1, nodes = n+2;
     
     forn(i, n)
     {
-        if(M[i] > 0) ne.add_edge(s, i, M[i]);
-        if(M[i] < 0) ne.add_edge(i, t, -M[i]);
+        if(M[i] < 0) ne.add_edge(s_, i, -M[i]);
+        if(M[i] > 0) ne.add_edge(i, t_,  M[i]);
     }
+
+    ne.max_flow(s_, t_);
     
-    ne.max_flow(s, t);
-    
-    for(auto e : ne.g[s]) if(e.f < e.cap) return false;
+    for(auto e : ne.g[s_]) if(e.f < e.cap) return false;
 
     forn(i, n)
     {
         for(auto e : ne.g[i])
         {
             int j = e.to;
-            if(j == s or j == t or e.is_back) continue;
+            if(j == s_ or j == t_ or e.is_back) continue;
             
             mando[ind[{i, j}]] = l[ind[{i, j}]] + e.f;
         }
     }
     
     return true;
+}
+
+ll max_bounded_flow(Dinic& ne, int n, int m, int s, int t)
+{
+	a[m] = s, b[m] = t;
+	u[n] = INF;
+
+	ll aa = 0, bb = INF;
+	
+	while(bb-aa > 1)
+	{
+		ll mid = (aa+bb) / 2;
+
+		l[n] = mid;
+		
+		if(feasible(ne, n, m+1)) aa = mid;
+		else                     bb = mid;
+	}
+
+	return aa;	//Last T
 }
 
 Dinic net(MAXN+2);
