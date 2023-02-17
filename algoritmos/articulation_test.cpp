@@ -67,8 +67,7 @@ void articulation(int v)    //Uso: forn(i, n) if(not vis[i]) articulation(i);
     int hijos = 0;
     for(auto x : g[v]) if(parent[x] == v) hijos ++;
 
-    if(hijos > 1) art[v] = true;
-    else          art[v] = false;
+    art[v] = hijos > 1;
 }
 
 
