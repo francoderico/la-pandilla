@@ -76,13 +76,10 @@ void build_queue()
         {
             Student s = {x, -1, u[i], v[i]};
 
-            if(i+1 < sz(u) and v[i] >= u[i+1])
+            st.push(s);
+            
+            if(i+1 >= sz(u) or v[i] < u[i+1])
             {
-                st.push(s);
-            }
-            else
-            {
-                stu_v.pb(s);
                 while(not st.empty()) stu_v.pb(st.top()), st.pop();
             }
         }
@@ -144,7 +141,7 @@ void del(Student &s)
     }
 }
 
-struct Fenwick
+struct Fenwick  //0-indexed
 {
     int n;
     vector<int> tree;
@@ -152,10 +149,10 @@ struct Fenwick
 
     void upd(int i, int x)  //Le sumo x al elemento en posición i
     {
-        for(; i <= n; i += i & -i) tree[i] += x;
+        for(i += 1; i <= n; i += i & -i) tree[i] += x;
     }
 
-    int query(int b)        //Devuelve la suma de los elementos en [1..b] (recordar que está indexado en 1).
+    int query(int b)        //Devuelve la suma de los elementos en [0..b)
     {
         int s = 0;
         
@@ -184,9 +181,9 @@ void solve()
 
         forn(i, sz(u))
         {
-            ans += abs(v[i] - kill_v.query(v[i]+1) - (u[i] - kill_u.query(u[i]+1)));
-            kill_u.upd(u[i]+1, 1);
-            kill_v.upd(v[i]+1, 1);
+            ans += abs(v[i] - kill_v.query(v[i]) - (u[i] - kill_u.query(u[i])));
+            kill_u.upd(u[i], 1);
+            kill_v.upd(v[i], 1);
         }
     }
 
