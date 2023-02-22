@@ -1,4 +1,4 @@
-// https://www.spoj.com/problems/XMAX/
+// https://codeforces.com/contest/1411/problem/G
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -24,30 +24,31 @@ typedef pair<int,int> pii;
 typedef pair<ll,ll> pll;
 typedef vector<ll> vll;
 
-const ll MAXN = 2e5+100;
+const ll MAXN = 1e5+100;
 const ll INF = 1e18+100;
-const ll MOD = 2;
+const ll MOD = 998244353;
 const ld EPS = 1e-9;
 const ld PI = acosl(-1);
 
 ll expmod(ll b, ll e)
 {
     if(e == 0) return 1;
-    ll q = expmod(b, e/2), p = q*q % MOD;
-    return e%2 == 0 ? p : p*b % MOD;
+    ll p = expmod(b, e/2), q = p*p % MOD;
+    return e%2 == 0 ? q : q*b % MOD;
 }
 
 ll inv(ll b)
 {
+    assert(b != 0);
     return expmod(b, MOD-2);
 }
 
-ll mod(ll a)
+ll mod(ll b)
 {
-	return (a % MOD + MOD) % MOD;
+    return (b % MOD + MOD) % MOD;
 }
 
-// Reduce la matriz mod 2
+// Reduce la matriz mod MOD
 void reduce(vector<vector<ll>> &a)
 {
 	int m = sz(a), n = sz(a[0]);
@@ -83,32 +84,67 @@ void reduce(vector<vector<ll>> &a)
 }
 
 
+const int MAXG = 512;
+bool vis[MAXN];
+int grundy[MAXN];
+vector<int> g[MAXN];
+
+void dfs(int v)
+{
+    vis[v] = true;
+
+    vector<int> s;
+
+    for(auto x : g[v])
+    {
+        if(not vis[x]) dfs(x);
+        s.pb(grundy[x]);
+    }
+    
+    sort(all(s));
+    auto en = unique(all(s));
+    
+    int sz = en-s.begin();
+
+    forn(i, sz) if(s[i] > i)
+    {
+        grundy[v] = i;
+        return;
+    }
+
+    grundy[v] = sz;
+}
+
 void solve()
 {
-    int m; cin >> m;
-    const int n = 64;
+    int n, m; cin >> n >> m;
+    forn(i, m)
+    {
+        int a, b; cin >> a >> b; a --, b --;
+        g[a].pb(b);
+    }
+
+    forn(i, n) if(not vis[i]) dfs(i);
+
+    ll q = inv(n+1);
 
     vector<vector<ll>> a;
 
-    forn(i, m)
+    forn(x, MAXG)
     {
-		ll x; cin >> x;
-		vector<ll> v;
-		forn(j, n) v.pb(x%MOD), x /= MOD;
-		reverse(all(v));
-		a.pb(v);
+        vector<ll> p(MAXG+1, 0);
+        p[x] = mod(-1);
+
+        forn(i, n) p[x^grundy[i]] = mod(p[x^grundy[i]] + q);
+
+        if(x > 0) p[MAXG] = mod(-q);
+
+        a.pb(p);
     }
 
     reduce(a);
 
-	bitset<n> ans;
-	
-	forn(j, n)
-	{
-		forn(i, m) ans[n-1-j] = ans[n-1-j] ^ a[i][j];
-	}
-    
-	cout << ans.to_ullong(), nn;
+    cout << a[0][MAXG], nn;
 }
 
 int main(){
@@ -122,3 +158,4 @@ int main(){
     
     return 0;
 }
+
