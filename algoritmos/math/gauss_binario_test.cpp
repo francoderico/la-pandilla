@@ -40,26 +40,26 @@ void reduce(vector<bitset<N>> &a)
 	int i = 0, j = 0;
 
 	while(i < m and j < n)
-    {
+	{
 		int h = i;
 
 		forr(k, i+1, m) if(a[k][j] > a[h][j]) h = k;
 		
-        if(a[h][j] == 0)
-        {
-            j ++;
-            continue;
-        }
+		if(a[h][j] == 0)
+		{
+			j ++;
+			continue;
+		}
 
 		if(h != i)
-        {
-            swap(a[i], a[h]);
-        }
-        
+		{
+			swap(a[i], a[h]);
+		}
+		
 		forr(k, 0, m)
-        {
+		{
 			if(k == i or a[k][j] == 0) continue;
-            dforr(l_, j, n) a[k][l_] = a[k][l_]^a[i][l_];
+			dforr(l_, j, n) a[k][l_] = a[k][l_]^a[i][l_];
 		}
 
 		i ++; j ++;
@@ -69,39 +69,39 @@ void reduce(vector<bitset<N>> &a)
 
 void solve()
 {
-    int m; cin >> m;
-    int n = 64;
+	int m; cin >> m;
+	int n = 64;
 
-    vector<bitset<N>> a;
+	vector<bitset<N>> a;
 
-    forn(i, m)
-    {
-        ull x_; cin >> x_;
-        bitset<N> x = x_;
-        bitset<N> y;
-        forn(i, N) y[i] = x[N-1-i];
-        a.pb(y);
-    }
+	forn(i, m)
+	{
+		ull x_; cin >> x_;
+		bitset<N> x = x_;
+		bitset<N> y;
+		forn(i, N) y[i] = x[N-1-i];
+		a.pb(y);
+	}
 
-    reduce(a);
+	reduce(a);
 
-    bitset<N> ans_, ans;
+	bitset<N> ans_, ans;
  
-    forn(i, m) ans_ ^= a[i];
+	forn(i, m) ans_ ^= a[i];
  
-    forn(j, N) ans[j] = ans_[N-1-j];
-    
-    cout << ans.to_ullong(), nn;
+	forn(j, N) ans[j] = ans_[N-1-j];
+	
+	cout << ans.to_ullong(), nn;
 }
 
 int main(){
-    //freopen("input.txt", "r", stdin);
-    //freopen("output.txt", "w", stdout);
+	//freopen("input.txt", "r", stdin);
+	//freopen("output.txt", "w", stdout);
 
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    solve();
-    
+	solve();
+	
     return 0;
 }
