@@ -37,33 +37,33 @@ double reduce(vector<vector<double>> &a)  // returns determinant
 {
 	int n = sz(a), m = sz(a[0]);
 	int i = 0, j = 0;
-    double r = 1.;
+	double r = 1.;
 
 	while(i < n and j < m)
-    {
+	{
 		int h = i;
 
 		forr(k, i+1, n) if(abs(a[k][j]) > abs(a[h][j])) h = k;
 		
-        if(abs(a[h][j]) < EPS)
-        {
-            j ++;
-            r = 0.;
-            continue;
-        }
+		if(abs(a[h][j]) < EPS)
+		{
+			j ++;
+			r = 0.;
+			continue;
+		}
 
 		if(h != i)
-        {
-            r = -r;
-            swap(a[i], a[h]);
-        }
+		{
+			r = -r;
+			swap(a[i], a[h]);
+		}
 
 		r *= a[i][j];
 
 		dforr(k, j, m) a[i][k] /= a[i][j];
-        
+		
 		forr(k, 0, n)
-        {
+		{
 			if(k == i) continue;
 			dforr(l_, j, m) a[k][l_] -= a[k][j] * a[i][l_];
 		}
@@ -90,25 +90,25 @@ vector<int> dep_variables(vector<vector<double>> &a)
 
 void solve()
 {
-    int m, n; cin >> m >> n;
-    vector<vector<double>> a(m, vector<double>(n));
-    forn(i, m) forn(j, n) cin >> a[i][j];
+	int m, n; cin >> m >> n;
+	vector<vector<double>> a(m, vector<double>(n));
+	forn(i, m) forn(j, n) cin >> a[i][j];
 
-    reduce(a);
-    vector<int> r = dep_variables(a);
-    
-    cout << sz(r), nn;
+	reduce(a);
+	vector<int> r = dep_variables(a);
+	
+	cout << sz(r), nn;
 }
 
 
 int main(){
-    //freopen("input.txt", "r", stdin);
-    //freopen("output.txt", "w", stdout);
+	//freopen("input.txt", "r", stdin);
+	//freopen("output.txt", "w", stdout);
 
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    solve();
-    
-    return 0;
+	solve();
+	
+	return 0;
 }

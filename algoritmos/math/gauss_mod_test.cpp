@@ -32,55 +32,69 @@ const ld PI = acosl(-1);
 
 ll expmod(ll b, ll e)
 {
-    if(e == 0) return 1;
-    ll p = expmod(b, e/2), q = p*p % MOD;
-    return e%2 == 0 ? q : q*b % MOD;
+	if(b <= 1) return b;
+	if(e == 0) return 1;
+	ll q = expmod(b, e/2), p = q*q % MOD;
+	return e%2 == 0 ? p : p*b % MOD;
 }
 
 ll inv(ll b)
 {
-    assert(b != 0);
-    return expmod(b, MOD-2);
+	return expmod(b, MOD-2);
 }
 
-ll mod(ll b)
+ll addmod(ll a, ll b)
 {
-    return (b % MOD + MOD) % MOD;
+	ll r = a+b;
+	return r < MOD ? r : r-MOD;
+}
+
+ll submod(ll a, ll b)
+{
+	ll r = a-b;
+	return r >= 0 ? r : r+MOD;
 }
 
 // Reduce la matriz mod MOD
-void reduce(vector<vector<ll>> &a)
+ll reduce(vector<vector<ll>> &a)    // returns determinant (solo tiene sentido si m == n)
 {
 	int m = sz(a), n = sz(a[0]);
 	int i = 0, j = 0;
+	ll r = 1;
 
 	while(i < m and j < n)
-    {
+	{
 		int h = i;
 
 		forr(k, i+1, m) if(a[k][j] > a[h][j]) h = k;
 		
-        if(a[h][j] == 0)
-        {
-            j ++;
-            continue;
-        }
+		if(a[h][j] == 0)
+		{
+			j ++;
+			r = 0;
+			continue;
+		}
 
 		if(h != i)
-        {
-            swap(a[i], a[h]);
-        }
+		{
+			r = submod(0, r);
+			swap(a[i], a[h]);
+		}
+
+		r = r * a[i][j] % MOD;
 
 		dforr(k, j, n) a[i][k] = a[i][k] * inv(a[i][j]) % MOD;
-        
+		
 		forr(k, 0, m)
-        {
+		{
 			if(k == i) continue;
-            dforr(l_, j, n) a[k][l_] = mod(a[k][l_] - a[k][j]*a[i][l_]);
+			dforr(l_, j, n) a[k][l_] = submod(a[k][l_], a[k][j]*a[i][l_]%MOD);
 		}
 
 		i ++; j ++;
 	}
+
+	return r;
 }
 
 
@@ -91,71 +105,70 @@ vector<int> g[MAXN];
 
 void dfs(int v)
 {
-    vis[v] = true;
+	vis[v] = true;
 
-    vector<int> s;
+	vector<int> s;
 
-    for(auto x : g[v])
-    {
-        if(not vis[x]) dfs(x);
-        s.pb(grundy[x]);
-    }
-    
-    sort(all(s));
-    auto en = unique(all(s));
-    
-    int sz = en-s.begin();
+	for(auto x : g[v])
+	{
+		if(not vis[x]) dfs(x);
+		s.pb(grundy[x]);
+	}
+	
+	sort(all(s));
+	auto en = unique(all(s));
+	
+	int sz = en-s.begin();
 
-    forn(i, sz) if(s[i] > i)
-    {
-        grundy[v] = i;
-        return;
-    }
+	forn(i, sz) if(s[i] > i)
+	{
+		grundy[v] = i;
+		return;
+	}
 
-    grundy[v] = sz;
+	grundy[v] = sz;
 }
 
 void solve()
 {
-    int n, m; cin >> n >> m;
-    forn(i, m)
-    {
-        int a, b; cin >> a >> b; a --, b --;
-        g[a].pb(b);
-    }
+	int n, m; cin >> n >> m;
+	forn(i, m)
+	{
+		int a, b; cin >> a >> b; a --, b --;
+		g[a].pb(b);
+	}
 
-    forn(i, n) if(not vis[i]) dfs(i);
+	forn(i, n) if(not vis[i]) dfs(i);
 
-    ll q = inv(n+1);
+	ll q = inv(n+1);
 
-    vector<vector<ll>> a;
+	vector<vector<ll>> a;
 
-    forn(x, MAXG)
-    {
-        vector<ll> p(MAXG+1, 0);
-        p[x] = mod(-1);
+	forn(x, MAXG)
+	{
+		vector<ll> p(MAXG+1, 0);
+		p[x] = submod(0, 1);
 
-        forn(i, n) p[x^grundy[i]] = mod(p[x^grundy[i]] + q);
+		forn(i, n) p[x^grundy[i]] = addmod(p[x^grundy[i]], q);
 
-        if(x > 0) p[MAXG] = mod(-q);
+		if(x > 0) p[MAXG] = submod(0, q);
 
-        a.pb(p);
-    }
+		a.pb(p);
+	}
 
-    reduce(a);
+	reduce(a);
 
-    cout << a[0][MAXG], nn;
+	cout << a[0][MAXG], nn;
 }
 
 int main(){
-    //freopen("input.txt", "r", stdin);
-    //freopen("output.txt", "w", stdout);
+	//freopen("input.txt", "r", stdin);
+	//freopen("output.txt", "w", stdout);
 
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    solve();
-    
-    return 0;
+	solve();
+	
+	return 0;
 }
-

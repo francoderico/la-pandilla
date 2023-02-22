@@ -12,21 +12,21 @@ void reduce(vector<bitset<N>> &a)
 
 		forr(k, i+1, m) if(a[k][j] > a[h][j]) h = k;
 		
-        if(a[h][j] == 0)
-        {
-            j ++;
-            continue;
-        }
+		if(a[h][j] == 0)
+		{
+			j ++;
+			continue;
+		}
 
 		if(h != i)
-        {
-            swap(a[i], a[h]);
-        }
-        
+		{
+			swap(a[i], a[h]);
+		}
+		
 		forr(k, 0, m)
-        {
+		{
 			if(k == i or a[k][j] == 0) continue;
-            dforr(l_, j, n) a[k][l_] = a[k][l_]^a[i][l_];
+			dforr(l_, j, n) a[k][l_] = a[k][l_]^a[i][l_];
 		}
 
 		i ++; j ++;
