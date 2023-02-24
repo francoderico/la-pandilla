@@ -7,37 +7,36 @@ using namespace std;
 using my_clock = chrono::steady_clock;
 
 class random_number_generator {
-
-	mt19937 mt;
-
+	mt19937 engine;
 public:
-
 	random_number_generator():
-		mt(my_clock::now().time_since_epoch().count())
-	{}
-
-	int random_int(int n) {
-		return random_int(0, n);
+		engine(my_clock::now().time_since_epoch().count()){}
+	/// Return random integer in [0,n).
+	template<typename Int=int>
+	Int random_int(Int n) {
+		return random_int<Int>(0, n);
 	}
-
-	int random_int(int a, int b) {
-		return uniform_int_distribution<>(a, b-1)(mt);
+	/// Return random integer in [a,b).
+	template<typename Int=int>
+	Int random_int(Int a, Int b) {
+		return uniform_int_distribution<Int>(a, b-1)(engine);
 	}
-
-	double random_real(double n) {
-		return random_real(0.0, n);
+	/// Return random real in [0,r).
+	template<typename Real=double>
+	Real random_real(Real r=1.) {
+		return random_real<Real>(0., n);
 	}
-
-	double random_real(double a, double b) {
-		return uniform_real_distribution<>(a, b)(mt);
+	/// Return random real in [a,b).
+	template<typename Real=double>
+	Real random_real(Real a, Real b) {
+		return uniform_real_distribution<Real>(a, b)(engine);
 	}
-
+	/// Shuffle range [first,last) randomly.
 	template<typename RandomIt>
 	void shuffle(RandomIt first, RandomIt last) {
-		std::shuffle(first, last, mt);
+		std::shuffle(first, last, engine);
 	}
-}
-rng;
+} rng;
 
 class time_keeper {
 
