@@ -24,7 +24,7 @@ public:
 	/// Return random real in [0,r).
 	template<typename Real=double>
 	Real random_real(Real r=1.) {
-		return random_real<Real>(0., n);
+		return random_real<Real>(0., r);
 	}
 	/// Return random real in [a,b).
 	template<typename Real=double>
