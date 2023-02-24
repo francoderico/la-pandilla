@@ -39,21 +39,20 @@ public:
 } rng;
 
 class time_keeper {
-
-	my_clock::time_point t0;
-
+	using time_point = my_clock::time_point;
+	time_point start = my_clock::now();
 public:
-
-	time_keeper():
-		t0(my_clock::now())
-	{}
-
-	double elapsed_time() {
-		my_clock::time_point t1 = my_clock::now();
-		return chrono::duration<double, milli>(t1 - t0).count();
+	/// Reset the timer.
+	void reset() {
+		start = my_clock::now();
 	}
-}
-timer;
+	/// Return the current time in the specified period, seconds by default.
+	template<typename Rep=double, class Period=ratio<1>>
+	Rep elapsed() {
+		const time_point now = my_clock::now();
+		return chrono::duration<Rep, Period>(now - start).count();
+	}
+} timer;
 
 template<typename Object,typename Change,typename Energy>
 class simulated_annealing{
