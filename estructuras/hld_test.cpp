@@ -23,7 +23,6 @@ typedef pair<ll,ll> pll;
 typedef vector<ll> vll;
 
 const ll MAXN = 1e4+100;
-const ll LOG2N = 14;
 
 const ll INF = 1e18+100;
 const ll MOD = 1e9+7;
@@ -43,7 +42,7 @@ int edge_cost[MAXN];  // cost of this edge
 int edge_owner[MAXN]; // which vertex owns this edge
 
 // vertex data
-int ancestor[MAXN][14];
+int padre[MAXN];
 int depth[MAXN];
 int owned_edge[MAXN]; // which edge this vertex owns
 int vertex_cost(int v) {
@@ -53,7 +52,7 @@ int vertex_cost(int v) {
 
 void root(int u, int p) {
 	for (auto [v,id] : g[u]) if (v!=p) {
-		ancestor[v][0] = u;
+		padre[v] = u;
 		depth[v] = depth[u]+1;
 		owned_edge[v] = id;
 		edge_owner[id] = v;
@@ -61,54 +60,66 @@ void root(int u, int p) {
 	}
 }
 
-void init_binary_lifting() {
-	forr(k,1,LOG2N) forn(u,n)
-		ancestor[u][k] = ancestor[ancestor[u][k-1]][k-1];
-}
+// datos por vertice
+int hi[MAXN]; // id del heavy path
+int hr[MAXN]; // raiz del heavy path
 
-int jump(int u, int x) {
-	dforn(k, LOG2N)
-		if (x & (1<<k))
-			u = ancestor[u][k];
-	return u;
-}
-
-int lca(int u, int v) {
-	if (depth[u] > depth[v]) swap(u,v);
-	assert(depth[u] <= depth[v]);
-	v = jump(v, depth[v]-depth[u]);
-	if (u == v) return u;
-	dforn(k, LOG2N) {
-		if (ancestor[u][k] != ancestor[v][k]) {
-			u = ancestor[u][k];
-			v = ancestor[v][k];
-		}
-	}
-	assert(ancestor[u][0] == ancestor[v][0]);
-	return ancestor[u][0];
-}
+// datos por heavy-path
+struct Segtree {};
+Segtree hp[MAXN];
+int hp_count = 0;
 
 void init_hld(int u) {
 	depth[u] = 0;
-	ancestor[u][0] = u;
+	padre[u] = u;
 	owned_edge[u] = -1;
 	root(u, -1);
-	init_binary_lifting();
+
+	// TODO
+	// para cada nodo u
+	// si es raiz de un heavy path
+	// init_hp(hp_count++, u)
 }
 
 int query_hld(int u, int v) {
-	int w = lca(u, v);
+	int result = 0;
+	while (hi[u] != hi[v]) {
+		if (depth[hr[u]] < depth[hr[v]]) swap(u, v);
+		result += query_hp(hr[u], u);
+		u = padre[hr[u]];
+	}
+	if (depth[v] < depth[u]) swap(u, v);
+	result += query_hp(u, v);
+	return result;
 }
 
-int query(int u, int v) {
-	if (u == v) return INT_MAX; // TODO: elemento neutro
-	int w = lca(u, v);
-	if (w == v) swap(u, v);
-	if (w == u) {
-		assert(depth[v] - depth[u] >= 1);
-		return query_hld(v, jump(v, depth[v]-depth[u]-1));
+// TODO
+void init_ds(int id, int* arr, int n) { }
+int query_ds(int id, int l, int r) { return -1; }
+
+int pos_in_path(int u) { return depth[u] - depth[hr[u]]; }
+
+int query_hp(int u, int v) {
+	// u es el de arriba
+	assert(depth[u] < depth[v]);
+	assert(hi[u] == hi[v]);
+	query_ds(hi[u], pos_in_path(u), pos_in_path(v)+1);
+}
+
+void init_hp(int id, int u) {
+	vector<int> costos;
+	for (int v = u; heavy_child(v) != -1; v = heavy_child(v)) {
+		hi[v] = id; hr[v] = u;
+		costos.pb(vertex_cost(v));
 	}
-	return query_hld(v, u);
+	init_ds(id, &costos[0], sz(costos));
+}
+
+
+HLD hld;
+
+
+int query(int u, int v) {
 }
 
 void update(int id, int cost) {
