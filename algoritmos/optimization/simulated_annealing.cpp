@@ -10,12 +10,10 @@ class random_number_generator {
 	mt19937 engine;
 public:
 	random_number_generator():
-		engine(my_clock::now().time_since_epoch().count()){}
+		engine(my_clock::now().time_since_epoch().count()) {}
 	/// Return random integer in [0,n).
 	template<typename Int=int>
-	Int random_int(Int n) {
-		return random_int<Int>(0, n);
-	}
+	Int random_int(Int n) {return random_int<Int>(0, n);}
 	/// Return random integer in [a,b).
 	template<typename Int=int>
 	Int random_int(Int a, Int b) {
@@ -23,9 +21,7 @@ public:
 	}
 	/// Return random real in [0,r).
 	template<typename Real=double>
-	Real random_real(Real r=1.) {
-		return random_real<Real>(0., r);
-	}
+	Real random_real(Real r=1.) {return random_real<Real>(0., r);}
 	/// Return random real in [a,b).
 	template<typename Real=double>
 	Real random_real(Real a, Real b) {
@@ -43,9 +39,7 @@ class time_keeper {
 	time_point start = my_clock::now();
 public:
 	/// Reset the timer.
-	void reset() {
-		start = my_clock::now();
-	}
+	void reset() {start = my_clock::now();}
 	/// Return the current time in the specified period, seconds by default.
 	template<typename Rep=double, class Period=ratio<1>>
 	Rep elapsed() {
@@ -54,87 +48,63 @@ public:
 	}
 } timer;
 
-template<typename Object,typename Change,typename Energy>
+template<typename Energy>
 class simulated_annealing{
-
-	typedef function<Energy(Object&)>InitializationFunction;
-
-	Object obj;
-	Energy curr_energy, lowest_energy;
-
-	void set_initial_state() {
-		// TODO
-		// Debe initializar a `obj` con un nuevo estado válido (si es que no se hizo antes),
-		// y setear a `curr_energy` y `lowest_energy` en base al nuevo estado del objeto
-		// (originalmente deben ser iguales)
+	using stir_function = function<const Energy()>;
+	using save_function = function<void()>;
+	const stir_function stir;
+	const save_function save;
+	Energy curr_energy, coldest;
+	/// Initialize the state of the system and return the corresponding energy.
+	const Energy initialize_state() const {
+		const Energy energy = stir();
+		return (save(), energy);
 	}
-
-	const Change neighbor() const& {
-		// TODO
-		// Usa a `obj` para obtener un nuevo cambio de estado, pero no debe modificar a `obj`.
-	}
-
-	void apply(const Change& change) {
-		// TODO
-		// Aplica el cambio `change` al estado `obj`.
-	}
-
-	Energy energy(const Change& change) const& {
-		// TODO
-		// Retorna la energía asociada al cambio de estado dado. No modifica nada.
-	}
-
-	double temperature(const double percentage_left) {
-		// TODO
-		// Se puede dejar así o cambiar (por ejemplo, retornando una constante por el
-		// valor `percentage_left`) dependiendo del problema.
+	/// Return the current temperature of the system.
+	///
+	/// Usually one will want to modify this definition, depending on the problem
+	/// being solved, so that the temperature is not as small in the beginning, so
+	/// long as it's decreasing and tending to zero.
+	double measure_temp(const double percentage_left) const {
 		return percentage_left;
 	}
-
-	double accept(
-		const Energy old_energy,
-		const Energy new_energy,
-		const double temp
-	) {
-		return (
-			new_energy < old_energy ?
-			1.0 :
-			exp(static_cast<double>(old_energy - new_energy) / temp)
-		);
+	/// Return the probability of accepting the new state corresponding to the
+	/// given energy.
+	double accept_prob(const Energy new_energy, const double temp) const {
+		const double delta = static_cast<double>(curr_energy - new_energy);
+		if (delta >= 0.) {return 1.;}
+		return exp(delta/temp);
 	}
-
 public:
-
-	simulated_annealing(const Object& _obj):
-		obj(_obj)
-	{
-		set_initial_state();
-	}
-
-	simulated_annealing& simulate(const double duration_limit=500) {
-		const double initial_time=timer.elapsed_time();
-		for(
-			double elapsed_time = timer.elapsed_time() - initial_time;
-			elapsed_time < duration_limit;
-			elapsed_time = timer.elapsed_time() - initial_time
+	simulated_annealing(const stir_function _stir, const save_function _save):
+		stir(move(_stir)),
+		save(move(_save)),
+		curr_energy(initialize_state()),
+		coldest(curr_energy){}
+	/// Execute the simulation until the time limit is reached.
+	simulated_annealing& simulate(const double time_limit=1.) {
+		const double initial_time = timer.elapsed();
+		for (
+			double elapsed_time = timer.elapsed() - initial_time;
+			elapsed_time < time_limit;
+			elapsed_time = timer.elapsed() - initial_time
 		) {
-			const double temp = temperature(1 - elapsed_time / duration_limit);
-			const Change new_change = neighbor();
-			const Energy new_energy = energy(new_change);
-			lowest_energy = min(lowest_energy, new_energy);
-			if(accept(curr_energy, new_energy, temp) >= rng.random_real(1)) {
-				apply(new_change);
-				curr_energy = new_energy;
+			const Energy new_energy = stir();
+			coldest = min(coldest, new_energy);
+			const double temp = measure_temp(1-elapsed_time/time_limit);
+			if (accept_prob(new_energy, temp) >= rng.random_real()) {
+				curr_energy = (save(), new_energy);
 			}
 		}
 		return *this;
 	}
-
-	const Object& get_last_state() const& {
-		return obj;
-	}
-
-	const Energy get_lowest_energy() const& {
-		return lowest_energy;
-	}
+	/// Return the last energy saved by the system.
+	///
+	/// This may or may not be the lowest energy of the simulation, although in
+	/// most problems it is. Useful for when one needs to now the energy
+	/// corresponding to the last state of the system, since storing the best
+	/// state can be inefficient.
+	const Energy peek_last_energy() const {return curr_energy;}
+	/// Return the lowest energy reached by the simulation at any point in time.
+	const Energy peek_lowest_energy() const {return coldest;}
 };
