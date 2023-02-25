@@ -46,7 +46,7 @@ double reduce(vector<vector<double>> &a)  // returns determinant (solo tiene sen
 // Vector de variables dependientes DESPUÉS DE REDUCIR
 // if(ret.back() == n-1) -> es inconsistente
 // if(ret == {0..n-2})   -> tiene solución única
-// else				  -> tiene infinitas soluciones
+// else				     -> tiene infinitas soluciones
 vector<int> dep_variables(vector<vector<double>> &a)
 {
 	vector<int> ret;
@@ -58,4 +58,28 @@ vector<int> dep_variables(vector<vector<double>> &a)
 	}
 
 	return ret;
+}
+
+
+//Dada una matriz de Markov A (todas las columnas suman 1) de nxn,
+//encuentra un vector estocástico v tal que Av = v (un autovector estocástico de autovalor 1).
+//Para esto resuelve (A-I)v = 0 y de las infinitas soluciones posibles agarra el estocástico.
+vector<ld> markov(vector<vector<ld>> &a)
+{
+	//assert(sz(a) > 0 and sz(a) == sz(a[0]));
+	int m = sz(a);
+	forn(i, m) a[i][i] += -1., a[i].pb(0.);	//Restamos I y agregamos el ti al que queremos llegar (0)
+
+	reduce(a);
+
+	ld escala = 1.;
+
+    forn(i, m-1) escala += -a[i][m-1];
+
+	vector<ld> v(m);
+    v[m-1] = 1/escala;
+
+    dforn(i, m-1) v[i] = -a[i][m-1] * v[m-1];
+
+	return v;
 }
