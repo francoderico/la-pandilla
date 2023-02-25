@@ -6,7 +6,7 @@ double reduce(vector<vector<double>> &a)  // returns determinant (solo tiene sen
 {
 	int m = sz(a), n = sz(a[0]);
 	int i = 0, j = 0;
-	double r = 1.;
+	double r = 1.0;
 
 	while(i < m and j < n)
 	{
@@ -17,7 +17,7 @@ double reduce(vector<vector<double>> &a)  // returns determinant (solo tiene sen
 		if(abs(a[h][j]) < EPS)
 		{
 			j ++;
-			r = 0.;
+			r = 0.0;
 			continue;
 		}
 
@@ -42,6 +42,7 @@ double reduce(vector<vector<double>> &a)  // returns determinant (solo tiene sen
 
 	return r;
 }
+
 
 // Vector de variables dependientes DESPUÉS DE REDUCIR
 // if(ret.back() == n-1) -> es inconsistente
