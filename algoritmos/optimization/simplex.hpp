@@ -1,17 +1,16 @@
 /// Solves the system of inequalities determined by `a*x <= b` and `x >= 0`
-/// with a solution that minimizes the objective function `c*x`.
+/// with a solution that maximizes the objective function `c*x`.
 ///
-/// More precisely, returns a pair `{z, s}` such that `z = c*s` is the smallest
+/// More precisely, returns a pair `{z, s}` such that `z = c*s` is the biggest
 /// possible value the objective function can reach with an input such that
 /// `a*s <= b` and `s >= 0`, if such solution exists. If no solution exists,
-/// returns `{nan, {}}`. If the objective function can get infintely small,
-/// returns `{-inf, {}}`.
+/// returns `{nan, {}}`. If the objective function can get infintely big,
+/// returns `{inf, {}}`.
 template<typename Real=double>
 pair<Real, vector<Real>> simplex(
 	vector<vector<Real>>a, vector<Real>b, vector<Real>c, const Real eps=EPS
 ) {
 	const int n = sz(b), m = sz(c);
-	forn(i, m) {c[i] = -c[i];}
 	vector<int> xs(m), ys(n);
 	iota(all(xs), 0), iota(all(ys), m);
 	Real z = 0.;
@@ -27,7 +26,7 @@ pair<Real, vector<Real>> simplex(
 				a[i][y] *= -a[x][y];
 			}
 		}
-		z -= c[y] * b[x];
+		z += c[y] * b[x];
 		forn(i, m) {if (i != y) {c[i] -= c[y] * a[x][i];}}
 		c[y] = -c[y] * a[x][y];
 	};
@@ -50,7 +49,7 @@ pair<Real, vector<Real>> simplex(
 				x = i;
 			}
 		}
-		if (x == -1) {return {-numeric_limits<Real>::infinity(), {}};}
+		if (x == -1) {return {numeric_limits<Real>::infinity(), {}};}
 		pivot(x, y);
 	}
 	vector<Real> sol(m);

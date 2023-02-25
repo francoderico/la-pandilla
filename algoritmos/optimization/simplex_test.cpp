@@ -116,11 +116,11 @@ void solve() {
 			old = curr, curr = dists[u][old].second
 		) {
 			const int edge = ids[{curr, old}];
-			c[edge] = mat[curr][old];
+			c[edge] = -mat[curr][old];
 		}
-		cout<<simplex(a, b, c, 1e-5).first<<' ';
+		cout<<-simplex(a, b, c, 1e-5).first<<' ';
 		forn(i, vars) {c[i] = -c[i];}
-		cout<<-simplex(a, b, c, 1e-5).first<<'\n';
+		cout<<simplex(a, b, c, 1e-5).first<<'\n';
 	}
 }
 
