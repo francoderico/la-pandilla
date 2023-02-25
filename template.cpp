@@ -5,10 +5,11 @@ using namespace std;
 #define forn(i,n) forr(i,0,n)
 #define dforr(i,a,b) for(int i=int(b)-1;i>=int(a);--i)
 #define dforn(i,n) dforr(i,0,n)
-#define db(v) cerr<<#v" = "<<(v)<<endl
+#define fore(e,c) for(const auto &e : (c))
+#define db(v) cerr<<#v" = "<<(v)<<'\n'
 #define nn cout<<'\n'
 #define sz(v) (int(v.size()))
-#define all(v) v.begin(), v.end()
+#define all(v) begin(v), end(v)
 #define pb push_back
 #define pp pop_back
 #define fst first
