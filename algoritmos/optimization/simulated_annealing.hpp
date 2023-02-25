@@ -1,9 +1,3 @@
-#include <algorithm>
-#include <chrono>
-#include <functional>
-#include <random>
-
-using namespace std;
 using my_clock = chrono::steady_clock;
 
 class random_number_generator {
@@ -80,7 +74,7 @@ public:
 		stir(move(_stir)),
 		save(move(_save)),
 		curr_energy(initialize_state()),
-		coldest(curr_energy){}
+		coldest(curr_energy) {}
 	/// Execute the simulation until the time limit is reached.
 	simulated_annealing& simulate(const double time_limit=1.) {
 		const double initial_time = timer.elapsed();
