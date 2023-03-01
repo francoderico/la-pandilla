@@ -13,7 +13,7 @@ Int ternary_search_integer(Int l, Int r, Function f) {
 template<typename Real, class Function>
 Real ternary_search_real(Real l, Real r, Function f, int iters=256){
 	while (iters--) {
-		const Real third = (r - l) /3.0, m1 = l + third, m2 = r - third;
+		const Real third = (r - l) / 3.0, m1 = l + third, m2 = r - third;
 		if (f(m1) > f(m2)) {l = m1;} else {r = m2;}
 	}
 	return l;
