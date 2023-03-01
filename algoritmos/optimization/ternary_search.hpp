@@ -1,4 +1,4 @@
-/// Return integer `a` such that `f(a) <= f(b)` for each integer `l <= b < r`.
+/// Return `a` such that `f(a) <= f(b)`, with integers `l <= a, b < r`.
 template<typename Int, class Function>
 Int ternary_search_integer(Int l, Int r, Function f) {
 	while (r - l >= 3) {
@@ -9,7 +9,7 @@ Int ternary_search_integer(Int l, Int r, Function f) {
 	return l;
 }
 
-/// Return real `a` such that `f(a) <= f(b)` for each real `l <= b < r`.
+/// Return `a` such that `f(a) <= f(b)`, with reals `l <= a, b < r`.
 template<typename Real, class Function>
 Real ternary_search_real(Real l, Real r, Function f, int iters=256){
 	while (iters--) {
