@@ -1,3 +1,4 @@
+// https://www.spoj.com/problems/QTREE/
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -22,122 +23,89 @@ typedef pair<int,int> pii;
 typedef pair<ll,ll> pll;
 typedef vector<ll> vll;
 
-const ll MAXN = 1e4+100;
+const ll MAXN = 2e4+100;
 
 const ll INF = 1e18+100;
 const ll MOD = 1e9+7;
 const ld EPS = 1e-9;
 const ld PI = acosl(-1);
 
-int n;
+vector<int> g[MAXN];
 
-struct hedge {
-	int v, id;
+struct Mono {
+	int x;
+	static Mono zero() { return {INT_MIN}; }
+};
+Mono operator+ (Mono a, Mono b) {
+	return {max(a.x, b.x)};
+}
+
+struct Segtree {
+	static constexpr int log2n = 15;
+	static constexpr int len = 1<<log2n, sze = 1<<(log2n+1);
+	vector<Mono> data;
+	Segtree() : data(sze) { }
+
+	// inicia con los valores dados O(n+len)
+	void init(Mono* a, int n) {
+		forn(i, sze) data[i] = Mono::zero();
+		forn(i, n) data[i+len] = a[i];
+		dforr(i, 1, len) data[i] = data[i*2] + data[i*2+1];
+	}
+
+	// point update O(log(len))
+	void update(int i, Mono x) {
+		i += len; data[i] = x;
+		while (i /= 2) data[i] = data[i*2] + data[i*2+1];
+	}
+
+	// range query O(log(len))
+	Mono query(int l, int r) { ql = l; qr = r; return q_(1, 0, len); }
+
+private:
+	int ql, qr;
+	Mono q_(int i, int l, int r) {
+		if (r <= ql || qr <= l) return Mono::zero();
+		if (ql <= l && r <= qr) return data[i];
+		int m = (l+r)/2;
+		return q_(i*2,l,m) + q_(i*2+1,m,r);
+	}
 };
 
-vector<hedge> g[MAXN];
+#include "hld.cpp"
 
-// edge data
-int edge_cost[MAXN];  // cost of this edge
-int edge_owner[MAXN]; // which vertex owns this edge
+Hld hld;
 
-// vertex data
-int padre[MAXN];
-int depth[MAXN];
-int owned_edge[MAXN]; // which edge this vertex owns
-int vertex_cost(int v) {
-	if (owned_edge[v] == -1) return INT_MAX; // TODO: elemento neutro
-	return edge_cost[owned_edge[v]];
-}
+void update(int u, int x) { hld.update(u, {x}); }
+int query(int u, int v) { return hld.query(u,v).x; }
 
-void root(int u, int p) {
-	for (auto [v,id] : g[u]) if (v!=p) {
-		padre[v] = u;
-		depth[v] = depth[u]+1;
-		owned_edge[v] = id;
-		edge_owner[id] = v;
-		root(v, u);
-	}
-}
-
-// datos por vertice
-int hi[MAXN]; // id del heavy path
-int hr[MAXN]; // raiz del heavy path
-
-// datos por heavy-path
-struct Segtree {};
-Segtree hp[MAXN];
-int hp_count = 0;
-
-void init_hld(int u) {
-	depth[u] = 0;
-	padre[u] = u;
-	owned_edge[u] = -1;
-	root(u, -1);
-
-	// TODO
-	// para cada nodo u
-	// si es raiz de un heavy path
-	// init_hp(hp_count++, u)
-}
-
-int query_hld(int u, int v) {
-	int result = 0;
-	while (hi[u] != hi[v]) {
-		if (depth[hr[u]] < depth[hr[v]]) swap(u, v);
-		result += query_hp(hr[u], u);
-		u = padre[hr[u]];
-	}
-	if (depth[v] < depth[u]) swap(u, v);
-	result += query_hp(u, v);
-	return result;
-}
-
-// TODO
-void init_ds(int id, int* arr, int n) { }
-int query_ds(int id, int l, int r) { return -1; }
-
-int pos_in_path(int u) { return depth[u] - depth[hr[u]]; }
-
-int query_hp(int u, int v) {
-	// u es el de arriba
-	assert(depth[u] < depth[v]);
-	assert(hi[u] == hi[v]);
-	query_ds(hi[u], pos_in_path(u), pos_in_path(v)+1);
-}
-
-void init_hp(int id, int u) {
-	vector<int> costos;
-	for (int v = u; heavy_child(v) != -1; v = heavy_child(v)) {
-		hi[v] = id; hr[v] = u;
-		costos.pb(vertex_cost(v));
-	}
-	init_ds(id, &costos[0], sz(costos));
-}
-
-
-HLD hld;
-
-
-int query(int u, int v) {
-}
-
-void update(int id, int cost) {
-}
 
 void solve() {
+	int n;
 	cin >> n;
 
-	forn(i,n-1){
+	int nodes = n+(n-1);
+	forn(i,nodes) g[i].clear();
+
+	vector<Mono> data(nodes, Mono::zero());
+
+	forn(i, n-1){
 		int u,v,cost;
 		cin >> u >> v >> cost;
 		--u; --v;
-		edge_cost[i] = cost;
-		g[u].pb({v, i});
-		g[v].pb({u, i});
+
+		int w = n+i;
+
+		data[w] = {cost};
+
+		g[u].pb(w);
+		g[w].pb(u);
+
+		g[v].pb(w);
+		g[w].pb(v);
 	}
 
-	init_hld(0);
+	hld.init(0, &data[0], nodes);
 
 	while (true) {
 		string op;
@@ -146,8 +114,8 @@ void solve() {
 			int id, cost;
 			cin >> id >> cost;
 			id--;
-			edge_cost[id] = cost;
-			update(id, cost);
+			int w = n+id;
+			update(w, cost);
 		} else if (op == "QUERY") {
 			int u, v;
 			cin >> u >> v;
