@@ -35,7 +35,7 @@ N* u_(N* t, int l, int r, int i, Mono x) {
 int ql, qr;
 Mono q_(N* t, int l, int r) {
 	if (qr <= l || r <= ql) return Mono::zero();
-	if (l <= ql && qr <= r) return t->x;
+	if (ql <= l && r <= qr) return t->x;
 	int m = (l+r)/2;
 	return q_(t->l, l, m) + q_(t->r, m, r);
 }
