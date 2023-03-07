@@ -48,65 +48,66 @@ int max_p(int n)
 #define oper(a, b) a+b
 #define NEUT 0
 
-struct STree
-{
-    vector<int> st, L, R; int n, rt;
-    STree(int n): st(1, NEUT), L(1, 0), R(1, 0), n(n), rt(0){}
-    int new_node(int v, int l = 0, int r = 0)
-    {
-        int ks=sz(st);
-        st.pb(v); L.pb(l), R.pb(r);
-        return ks;
-    }
 
-    int init(int s, int e, int *a)
-    {
-        if(s+1 == e) return new_node(a[s]);
-        int m = (s+e)/2, l = init(s, m, a), r = init(m, e, a);
-        return new_node(oper(st[l], st[r]), l, r);
-    }
+const int LOG2N  = 17; // ceil(log2(MAXN))
+const int STLEN = 1<<LOG2N;
 
-    int upd(int k, int s, int e, int p, int v)
-    {
-        int ks =new_node(st[k], L[k], R[k]);
-        if(s+1 == e) {st[ks]= v; return ks;}
-        int m = (s+e)/2, ps;
-        if(p < m) ps = upd(L[ks], s, m, p, v), L[ks]=ps;
-        else ps=upd(R[ks], m, e, p, v), R[ks] = ps;
-        st[ks] = oper(st[L[ks]], st[R[ks]]);
-        return ks;
-    }
-
-    int query(int k, int s, int e, int a, int b)
-    {
-        if(e <= a or b <= s) return NEUT;
-        if(a <= s and e <= b) return st[k];
-        int m = (s+e)/2;
-        return oper(query(L[k], s, m, a, b), query(R[k], m, e, a, b));
-    }
-
-    int init(int *a) {return init(0, n, a);}
-    int upd(int k, int p, int v) {return rt=upd(k, 0, n, p, v);}
-    int upd(int p, int v) { return upd(rt, p, v);}
-    int query(int k, int a, int b){return query(k, 0, n, a, b);}
+struct Mono {
+	int x;
+	static Mono zero() { return {0}; } // neutro de la suma
 };
+Mono operator+ (Mono a, Mono b) { return {a.x+b.x}; } // asociativo
+
+struct N {
+	N(Mono x_, N* l_, N* r_)
+	: x{x_}, l{l_}, r{r_} {}
+	Mono x; N* l; N* r;
+};
+N empty_node(Mono::zero(), &empty_node, &empty_node);
+
+// optimizacion: >30% mas rapido que 'new N(x,l,r)'
+deque<N> st_alloc;
+N* make_node(Mono x, N* l, N* r) {
+	st_alloc.emplace_back(x, l, r);
+	return &st_alloc.back();
+}
+
+N* u_(N* t, int l, int r, int i, Mono x) {
+	if (i+1 <= l || r <= i) return t;
+	if (r-l == 1) return make_node(x, nullptr, nullptr);
+	int m = (l+r)/2;
+	auto lt = u_(t->l, l, m, i, x);
+	auto rt = u_(t->r, m, r, i, x);
+	return make_node(lt->x + rt->x, lt, rt);
+}
+
+int ql, qr;
+Mono q_(N* t, int l, int r) {
+	if (qr <= l || r <= ql) return Mono::zero();
+	if (ql <= l && r <= qr) return t->x;
+	int m = (l+r)/2;
+	return q_(t->l, l, m) + q_(t->r, m, r);
+}
+
+// suma en rango:  t[l,r)
+Mono query(N* t, int l, int r) { ql = l; qr = r; return q_(t, 0, STLEN); }
+
+// asignacion en punto:  t[i]=x
+N* update(N* t, int i, Mono x) { return u_(t, 0, STLEN, i, x); }
 
 
-STree t(MAXN);
-int node[MAXN];
+N* node[MAXN];
 
 void solve() {
     crear_criba();
 
-    int root;
-    forn(i, MAXN) root = t.upd(i, 0);
+    node[1] = &empty_node;
 
-    node[1] = root;
     forr(i, 2, MAXN)
     {
         int idx = max_p(i);
-        int prev_val = t.query(node[i-1], idx, idx+1);
-        node[i] = t.upd(idx, prev_val+1);
+        int prev_val = query(node[i-1], idx, idx+1).x;
+        node[i] = update(node[i-1], idx, {prev_val+1});
     }
 
     int q; cin >> q;
@@ -114,7 +115,7 @@ void solve() {
     {
         int n, k; cin >> n >> k;
 
-        cout << t.query(node[n], 0, k+1), nn;
+        cout << query(node[n], 0, k+1).x, nn;
     }
 }
 
