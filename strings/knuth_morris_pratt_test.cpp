@@ -33,7 +33,7 @@ void solve() {
 	int n, w;
 	cin>>n>>w;
 	vector<int> a = read(n), b = read(w);
-	vector<int> occs = knuth_morris_pratt<int>(b.data()).matches(a.data());
+	vector<int> occs = Kmp<int>(b.data()).matches(a.data());
 	cout<<sz(occs)<<'\n';
 }
 
