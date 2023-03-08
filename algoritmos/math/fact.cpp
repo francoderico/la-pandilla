@@ -11,10 +11,10 @@ void fact(ll n, map<ll, int> &F)
 
 
 
-// 0 si es primo, algún primo que lo divide si no.
 const int MAXP = 1e7+100;
 int criba[MAXP];
 
+// 0 si es primo, algún primo que lo divide si no.
 void crear_criba()
 {
     for(int i = 2; i*i < MAXP; i ++) if(! criba[i]) for(int j = i*i; j < MAXP; j += i) criba[j] = i;
