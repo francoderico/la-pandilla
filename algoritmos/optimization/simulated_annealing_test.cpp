@@ -37,7 +37,7 @@ void solve() {
 		return last;
 	};
 	auto save = [&] {swap(order[l], order[r]);};
-	simulated_annealing<int> sa(stir, save);
+	SimulatedAnnealing<int> sa(stir, save);
 	const int rows = sa.simulate(0.95).peek_lowest_energy();
 	if (rows <= 12) {cout<<rows<<'\n';}
 	else {cout<<"impossible\n";}

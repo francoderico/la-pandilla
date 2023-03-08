@@ -47,7 +47,7 @@ double reduce(vector<vector<double>> &a)  // returns determinant (solo tiene sen
 // Vector de variables dependientes DESPUÉS DE REDUCIR
 // if(ret.back() == n-1) -> es inconsistente
 // if(ret == {0..n-2})   -> tiene solución única
-// else				     -> tiene infinitas soluciones
+// else					 -> tiene infinitas soluciones
 vector<int> dep_variables(vector<vector<double>> &a)
 {
 	vector<int> ret;
@@ -75,12 +75,12 @@ vector<ld> markov(vector<vector<ld>> &a)
 
 	ld escala = 1.;
 
-    forn(i, m-1) escala += -a[i][m-1];
+	forn(i, m-1) escala += -a[i][m-1];
 
 	vector<ld> v(m);
-    v[m-1] = 1/escala;
+	v[m-1] = 1/escala;
 
-    dforn(i, m-1) v[i] = -a[i][m-1] * v[m-1];
+	dforn(i, m-1) v[i] = -a[i][m-1] * v[m-1];
 
 	return v;
 }
