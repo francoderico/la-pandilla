@@ -1,5 +1,5 @@
 /// Return a vector `pi` of length `sz(word)` such that `pi[i]` is the length
-/// of the longest proper suffix of `word[0..i]` that is also its prefix, for
+/// of the longest proper suffix of `word[0..i]` that is also its prefix for
 /// `0 <= i < sz(word)`.
 template<typename Char=char>
 vector<int> prefix_function(const basic_string<Char>& word) {
@@ -16,7 +16,7 @@ vector<int> prefix_function(const basic_string<Char>& word) {
 
 /// Return a vector `z` of length `sz(word)` such that `z[0] = 0` and `z[i]`
 /// is the length of the longest prefix of `word` that also begins at position
-/// `i`, for `0 < i < sz(word)`, and `z[0] = 0`.
+/// `i` for `0 < i < sz(word)`.
 template<typename Char=char>
 vector<int> z_function(const basic_string<Char>& word) {
 	const int n = sz(word);
