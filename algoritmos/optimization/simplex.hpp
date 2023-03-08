@@ -13,7 +13,7 @@ pair<Real, vector<Real>> simplex(
 	const int n = sz(b), m = sz(c);
 	vector<int> xs(m), ys(n);
 	iota(all(xs), 0), iota(all(ys), m);
-	Real z = 0.;
+	Real z = 0.0;
 	const auto pivot = [&] (const int x, const int y) {
 		swap(xs[y], ys[x]);
 		b[x] /= a[x][y];

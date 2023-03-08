@@ -81,8 +81,8 @@ void solve() {
 	vector<double> b(rows);
 	forn (var, vars) {
 		const int i = 2 * var, j = i + 1;
-		a[i][var] = 1., b[i] = 2.;
-		a[j][var] = -1., b[j] = -1.;
+		a[i][var] = 1.0, b[i] = 2.0;
+		a[j][var] = -1.0, b[j] = -1.0;
 	}
 	forn(idx, r) {
 		const int i = 2 * (vars + idx), j = i + 1;
@@ -106,7 +106,7 @@ void solve() {
 		cin>>u>>v;
 		cout<<u<<' '<<v<<' ';
 		if (vars == 0) {
-			cout<<0.<<' '<<0.<<'\n';
+			cout<<0.0<<' '<<0.0<<'\n';
 			continue;
 		}
 		vector<double> c(vars);
