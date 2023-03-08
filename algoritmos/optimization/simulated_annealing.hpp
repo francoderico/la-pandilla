@@ -1,9 +1,10 @@
 using my_clock = chrono::steady_clock;
 
-class random_number_generator {
+/// Useful tool for generating random numbers easily.
+class RandomNumberGenerator {
 	mt19937 engine;
 public:
-	random_number_generator():
+	RandomNumberGenerator():
 		engine(my_clock::now().time_since_epoch().count()) {}
 	/// Return random integer in [0,n).
 	template<typename Int=int>
@@ -28,7 +29,8 @@ public:
 	}
 } rng;
 
-class time_keeper {
+/// Useful tool for fetching the time since the start of program execution.
+class TimeKeeper {
 	using time_point = my_clock::time_point;
 	time_point start = my_clock::now();
 public:
@@ -42,8 +44,12 @@ public:
 	}
 } timer;
 
+/// Encapsulation of the simulated annealing algorithm.
+///
+/// It just takes two argument functions, one for temporarily changing the
+/// state of the system slightly and one for saving that internal state.
 template<typename Energy>
-class simulated_annealing{
+class SimulatedAnnealing {
 	using stir_function = function<const Energy()>;
 	using save_function = function<void()>;
 	const stir_function stir;
@@ -70,13 +76,13 @@ class simulated_annealing{
 		return exp(delta/temp);
 	}
 public:
-	simulated_annealing(const stir_function _stir, const save_function _save):
+	SimulatedAnnealing(const stir_function _stir, const save_function _save):
 		stir(move(_stir)),
 		save(move(_save)),
 		curr_energy(initialize_state()),
 		coldest(curr_energy) {}
 	/// Execute the simulation until the time limit is reached.
-	simulated_annealing& simulate(const double time_limit=1.) {
+	SimulatedAnnealing& simulate(const double time_limit=1.) {
 		const double initial_time = timer.elapsed();
 		for (
 			double elapsed_time = timer.elapsed() - initial_time;
