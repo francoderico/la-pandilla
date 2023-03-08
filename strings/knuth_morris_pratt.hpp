@@ -4,9 +4,8 @@
 /// Because the pattern's preprocessing is only done once, it allows us to
 /// efficiently run KMP with multiple texts.
 template<typename Char=char>
-class Kmp{
+struct Kmp {
 	using str = basic_string<Char>;
-public:
 	const vector<int> pi;
 	const str pattern;
 	Kmp(const str& _pattern):
