@@ -1,7 +1,7 @@
 
 // struct edge { int v, w; };    vector<edge> g[MAXN];
  
-struct path { int v; ll d; };
+struct path { int u; ll d; };
 bool operator<(path a, path b) { return a.d > b.d; }
  
 vector<ll> dijkstra(int s) {
