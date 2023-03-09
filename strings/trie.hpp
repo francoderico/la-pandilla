@@ -1,6 +1,6 @@
 /// Simple trie working as a multiset of strings with extra stuff.
 ///
-/// The trie can be thought as an automaton that accepts a collection of
+/// The trie can be thought of as an automaton that accepts a collection of
 /// strings and where every simple path starting from the initial state
 /// corresponds to a prefix of some string in the multiset.
 template<typename Char=char>
