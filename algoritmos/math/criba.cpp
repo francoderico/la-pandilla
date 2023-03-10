@@ -42,7 +42,7 @@ void init_sieve() {
 					marked[ix_sieve(x)] = p;
 }
 
-// devuelve 0 sii n es primo
+// devuelve 0 sii n es primo o 1
 // caso contrario, devuelve el menor divisor primo de n
 int query_sieve(int n) {
 	if (n <= 2) return 0;
