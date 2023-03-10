@@ -2,6 +2,7 @@ ll gcd(ll a, ll b) {return a ? gcd(b%a, a) : b;}
 
 ll mulmod(ll b, ll a, ll m)
 {
+	// Si el producto entra en ll, quitar el casteo
 	return __int128(a)*b % m;
 }
 
@@ -30,7 +31,7 @@ bool es_primo_prob(ll n, int a)
 	return false;
 }
 
-bool rabin(ll n)	//true iff n is prime
+bool rabin(ll n)	// true sii n es primo
 {
 	if(n == 1) return false;
 	int ar[] = {2,3,5,7,11,13,17,19,23};
@@ -45,6 +46,7 @@ ll rho(ll n)
 	ll c = rand()%n + 1;
 	while(d == 1)
 	{
+		// Si se necesita más velocidad, agregar addmod en estas 3 líneas
 		x = (mulmod(x, x, n)+c) % n;
 		y = (mulmod(y, y, n)+c) % n;
 		y = (mulmod(y, y, n)+c) % n;
