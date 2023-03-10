@@ -2,9 +2,7 @@ ll gcd(ll a, ll b) {return a ? gcd(b%a, a) : b;}
 
 ll mulmod(ll b, ll a, ll m)
 {
-	if(!a) return 0;
-	ll q = mulmod(b, a/2, m); q = (q+q)%m;
-	return a&1 ? (b+q)%m : q;
+	return __int128(a)*b % m;
 }
 
 ll expmod(ll b, ll e, ll m)
