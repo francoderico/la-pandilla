@@ -1,4 +1,7 @@
 /// Full Aho-Corasick automaton.
+///
+/// It works as a simple trie but with some extra structure that allows one to
+/// change branches in order to continue traversing the tree.
 template<typename Char=char>
 class AhoCorasick {
 	using str = basic_string<Char>;
