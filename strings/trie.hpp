@@ -41,15 +41,12 @@ public:
 	/// Insert `word` into the automaton.
 	void insert(const str& word) {
 		int curr = 0;
-		vector<int> path;
-		path.reserve(sz(word));
 		fore(c, word) {
-			path.push_back(curr);
+			++elements[curr];
 			if (!next[curr].count(c)) {next[curr][c] = create_state();}
 			curr = next[curr].at(c);
 		}
 		++terminal[curr], ++elements[curr];
-		fore(node, path) {++elements[node];}
 	}
 	/// Erase one occurrence of `word` from the automaton.
 	void erase(const str& word) {
