@@ -45,16 +45,13 @@ public:
 	/// Insert `bits` into the automaton.
 	void insert(const seq& bits) {
 		int curr = 0;
-		vector<int> path;
-		path.reserve(Bits);
 		dforn(i, Bits) {
-			path.push_back(curr);
+			++elements[curr];
 			const bool bit = bits[i];
 			if (!next[curr][bit]) {next[curr][bit] = create_state();}
 			curr = next[curr][bit];
 		}
 		++terminal[curr], ++elements[curr];
-		fore(node, path) {++elements[node];}
 	}
 	/// Erase one occurrence of `bits` from the automaton.
 	void erase(const seq& bits) {
