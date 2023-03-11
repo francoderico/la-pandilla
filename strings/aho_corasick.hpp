@@ -16,8 +16,8 @@ public:
 	vector<vector<int>> terminal{{}};
 	// Trie transitions in the automaton.
 	vector<map<Char, int>> next{{}};
-	// Suffix and dictionary links. A suffix link for node `v` points to its
-	// longest proper suffix. A dictionary link for node `v` points to the first
+	// Suffix and dictionary links. A suffix link for node `u` points to its
+	// longest proper suffix. A dictionary link for node `u` points to the first
 	// terminal state that can be reached using suffix links.
 	vector<int> suff, dict;
 	// Strings inserted into the automaton.
