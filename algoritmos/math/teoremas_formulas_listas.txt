@@ -48,3 +48,9 @@ Teoremas:
 (Dilworth) In any finite partially ordered set, the maximum number of elements in any antichain equals the minimum number of chains in any partition of the set into chains
 (Hall) Un grafo bipartito (A, B) tiene matching perfecto sii para cada subconjunto X de A, |vecinos(X)| >= |X|.
 (Pick) A = I + B/2 -1  (area of polygon, points inside, points on border)
+
+
+https://en.wikipedia.org/wiki/M%C3%B6bius_function - Algebraic number theory
+Gauss[1] proved that for a prime number p the sum of its primitive roots is congruent to μ(p − 1) (mod p).
+
+
