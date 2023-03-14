@@ -38,7 +38,7 @@ void fact(ll n, map<ll, int> &F)
 
 // Requiere criba
 vector<int> primos;
-void buscar_primos()	//¡¡crear_criba() primero!!
+void buscar_primos()	//crear_criba() primero!!
 {
 	forr(i, 2, MAXP) if(! criba[i]) primos.pb(i);
 }
