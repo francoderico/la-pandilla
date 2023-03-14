@@ -22,6 +22,11 @@ public:
 	vector<int> suff, dict;
 	// Strings inserted into the automaton.
 	vector<str> words;
+	AhoCorasick() {}
+	AhoCorasick(const vector<str>& words) {
+		fore(word, words) {insert(word);}
+		complete_automaton();
+	}
 	/// Insert `word` into the automaton.
 	void insert(const str& word) {
 		assert(suff.empty());
