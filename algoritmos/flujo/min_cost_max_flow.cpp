@@ -1,4 +1,4 @@
-//De todos los flujos máximos, me da el de costo mínimo en O(n^2 m^2)
+//De todos los flujos maximos, me da el de costo minimo en O(n^2 m^2)
 typedef ll tf;
 typedef ll tc;
 const tf INFFLOW = 1e9;

@@ -32,7 +32,7 @@ const ld PI = acosl(-1);
 const int MAXP = 320;
 int criba[MAXP];
 
-// 0 si es primo (o si es 1), algún primo que lo divide si no.
+// 0 si es primo (o si es 1), algun primo que lo divide si no.
 void crear_criba()
 {
 	for(int i = 2; i*i < MAXP; i ++) if(! criba[i]) for(int j = i*i; j < MAXP; j += i) criba[j] = i;

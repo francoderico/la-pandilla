@@ -1,4 +1,4 @@
-const int N = 64;	//Tamaño del bitset, puede ser cualquier cosa
+const int N = 64;	//Tamano del bitset, puede ser cualquier cosa
 
 // Reduce la matriz mod 2
 void reduce(vector<bitset<N>> &a)

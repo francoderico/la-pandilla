@@ -34,7 +34,7 @@ const ld PI = acosl(-1);
 
 //dist: una vez que tiramos el flujo, me dice la distancia desde S, sin ponderar
 
-//Las aristas e de la red residual tienen e.cap = 0 y e.f = -(flujo en la otra dirección).
+//Las aristas e de la red residual tienen e.cap = 0 y e.f = -(flujo en la otra direccion).
 //Por ejemplo, si la arista u-v termina tirando 3 de flujo, la arista v-u de la residual tiene -3.
 
 struct Dinic

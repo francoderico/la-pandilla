@@ -72,8 +72,8 @@ ld reduce(vector<vector<ld>> &a)  // returns determinant (solo tiene sentido si 
 }
 
 //Dada una matriz de Markov A (todas las columnas suman 1) de nxn,
-//encuentra un vector estocástico v tal que Av = v (un autovector estocástico de autovalor 1).
-//Para esto resuelve (A-I)v = 0 y de las infinitas soluciones posibles agarra el estocástico.
+//encuentra un vector estocastico v tal que Av = v (un autovector estocastico de autovalor 1).
+//Para esto resuelve (A-I)v = 0 y de las infinitas soluciones posibles agarra el estocastico.
 vector<ld> markov(vector<vector<ld>> &a)
 {
 	//assert(sz(a) > 0 and sz(a) == sz(a[0]));

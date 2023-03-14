@@ -1,4 +1,4 @@
-Lista de números con mayor cantidad de divisores hasta 10^n
+Lista de numeros con mayor cantidad de divisores hasta 10^n
 1    6                        4
 2    60                       12
 3    840                      32
@@ -18,7 +18,7 @@ Lista de números con mayor cantidad de divisores hasta 10^n
 17   74801040398884800        64512
 18   897612484786617600       103680
 
-Ampliación de la lista anterior: highly composite numbers, números con mayor
+Ampliacion de la lista anterior: highly composite numbers, numeros con mayor
 cantidad de divisores que cualquiera menor, mostrados como (n, cant de divisores)
 (1,1) (2,2) (4,3) (6,4) (12,6) (24,8) (36,9) (48,10) (60,12) (120,16) (180,18) (240,20) (360,24) (720,30) (840,32) (1260,36) (1680,40) (2520,48) (5040,60) (7560,64) (10080,72) (15120,80) (20160,84) (25200,90) (27720,96) (45360,100) (50400,108) (55440,120) (83160,128) (110880,144) (166320,160) (221760,168) (277200,180) (332640,192) (498960,200) (554400,216) (665280,224) (720720,240) (1081080,256) (1441440,288) (2162160,320) (2882880,336) (3603600,360) (4324320,384) (6486480,400) (7207200,432) (8648640,448) (10810800,480) (14414400,504) (17297280,512) (21621600,576) (32432400,600) (36756720,640) (43243200,672) (61261200,720) (73513440,768) (110270160,800) (122522400,864) (147026880,896) (183783600,960) (245044800,1008) (294053760,1024) (367567200,1152) (551350800,1200) (698377680,1280) (735134400,1344) (1102701600,1440) (1396755360,1536) (2095133040,1600) (2205403200,1680) (2327925600,1728) (2793510720,1792) (3491888400,1920) (4655851200,2016) (5587021440,2048) (6983776800,2304) (10475665200,2400) (13967553600,2688) (20951330400,2880) (27935107200,3072) (41902660800,3360) (48886437600,3456) (64250746560,3584) (73329656400,3600) (80313433200,3840) (97772875200,4032) (128501493120,4096) (146659312800,4320) (160626866400,4608) (240940299600,4800) (293318625600,5040) (321253732800,5376) (481880599200,5760) (642507465600,6144) (963761198400,6720)
 
@@ -44,7 +44,7 @@ Lista de pi(10^n), o sea, cantidad de primos <= 10^n (~ n/log(n)):
 
 n / phi(n-1) ~ log log n
 
-La menor raíz primitiva de un primo p es ~ log^6 p
+La menor raiz primitiva de un primo p es ~ log^6 p
 
 If g is a primitive root modulo p, then g is also a primitive root modulo all powers p^k unless g^(p−1) ≡ 1 (mod p^2); in that case, g + p is.
 If g is a primitive root modulo p^k, then g is also a primitive root modulo all smaller powers of p.
@@ -58,7 +58,7 @@ Teoremas:
 (Pick) A = I + B/2 -1  (area of polygon, points inside, points on border)
 
 
-If a is a primitive root modulo the prime p, then a^((p-1)/2) = -1 (mod p) (ya que que a^2 = 1 (mod p) => a = +-1 (mod p), y al ser raíz primitiva no puede ser 1).
+If a is a primitive root modulo the prime p, then a^((p-1)/2) = -1 (mod p) (ya que que a^2 = 1 (mod p) => a = +-1 (mod p), y al ser raiz primitiva no puede ser 1).
 
 For a prime number p the sum of its primitive roots is congruent to μ(p − 1) (mod p).
 For a prime number p (with the sole exception of p = 3), the product of its primitive roots is congruent to 1 (mod p).
