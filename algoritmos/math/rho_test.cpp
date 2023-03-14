@@ -41,41 +41,47 @@ ll mulmod(ll b, ll a, ll m)
 ll expmod(ll b, ll e, ll m)
 {
 	ll res = 1;
- 
+
 	while (e)
 	{
 		if (e%2) res = mulmod(res, b, m);
 		b = mulmod(b, b, m);
 		e /= 2;
 	}
-	
-	return res;
-}
 
-bool es_primo_prob(ll n, int a)
-{
-	if(n == a) return true;
-	ll s = 0, d = n-1;
-	while(d%2 == 0) s ++, d /= 2;
-	
-	ll x = expmod(a, d, n);
-	if((x == 1) || (x+1 == n)) return true;
-	
-	forr(_, 0, s-1)
-	{
-		x = mulmod(x, x, n);
-		if(x == 1) return false;
-		if(x+1 == n) return true;
-	}
-	
-	return false;
+	return res;
 }
 
 bool rabin(ll n)	// true sii n es primo
 {
-	if(n == 1) return false;
-	int ar[] = {2,3,5,7,11};
-	fore(p, ar) if(!es_primo_prob(n, p)) return false;
+	if (n < 2) return false;
+	const int primes[] = {2, 3, 5, 13, 19, 73, 193, 407'521, 299'210'837};
+	
+	fore(p, primes) if (n % p == 0) return n == p;
+	
+	int s = 0;
+	ll d = n - 1;
+	while (d%2 == 0) d /= 2, s ++;
+
+	const int bases[] = {2, 325, 9'375, 28'178, 450'775, 9'780'504, 1'795'265'022};
+	
+	const auto is_witness = [n,d,s](const ll a)
+	{
+		ll x = expmod(a%n, d, n);
+
+		if (x == 1 or x == n-1) return false;
+
+		forr(r, 1, s)
+		{
+			x = mulmod(x, x, n);
+			if(x == n-1) return false;
+			if(x == 1)   return true;
+		}
+
+		return true;
+	};
+	
+	fore(a,bases) if(is_witness(a)) return false;
 	return true;
 }
 
@@ -203,3 +209,5 @@ int main(){
 
 	solve();
 }
+
+// Testing la-pandilla
