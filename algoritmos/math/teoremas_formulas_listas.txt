@@ -60,10 +60,8 @@ Teoremas:
 
 If a is a primitive root modulo the prime p, then a^((p-1)/2) = -1 (mod p) (ya que que a^2 = 1 (mod p) => a = +-1 (mod p), y al ser raíz primitiva no puede ser 1).
 
-https://en.wikipedia.org/wiki/M%C3%B6bius_function
-https://en.wikipedia.org/wiki/Primitive_root_modulo_n#Properties
-Algebraic number theory - For a prime number p the sum of its primitive roots is congruent to μ(p − 1) (mod p).
-                          For a prime number p (with the sole exception of p = 3), the product of its primitive roots is congruent to 1 (mod p).
+For a prime number p the sum of its primitive roots is congruent to μ(p − 1) (mod p).
+For a prime number p (with the sole exception of p = 3), the product of its primitive roots is congruent to 1 (mod p).
 
 The Möbius function is multiplicative (i.e., μ(ab) = μ(a) μ(b)) whenever a and b are coprime.
 
