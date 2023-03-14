@@ -1,11 +1,11 @@
-//Min cut: nodes with dist>=0 (S y todos los alcanzables) vs nodes with dist == -1
-//Matching máximo
-//min vertex cover: left nodes with dist == -1 + right nodes with dist>0
-//MAX independent set: complemento del mvc, o sea, left nodes with dist>0 + right nodes with dist == -1
-//min edge cover: MM + una arista cualquiera por cada otro nodo (es imposible sii hay algún nodo sin aristas)
-//Feasible (red fuertemente conexa con restricciones de mínimo y máximo en cada arista)
+// Min cut: nodes with dist>=0 (S y todos los alcanzables) vs nodes with dist == -1
+// Matching máximo
+// min vertex cover: left nodes with dist == -1 + right nodes with dist>0
+// MAX independent set: complemento del mvc, o sea, left nodes with dist>0 + right nodes with dist == -1
+// min edge cover: MM + una arista cualquiera por cada otro nodo (es imposible sii hay algún nodo sin aristas)
+// Feasible (red fuertemente conexa con restricciones de mínimo y máximo en cada arista)
 
-//Conjunto del min cut de s, sin incluir al propio s
+// Conjunto del min cut de s, sin incluir al propio s
 vector<int> min_cut_s(Dinic& ne, int nodes)
 {
 	vector<int> ret;
@@ -13,7 +13,7 @@ vector<int> min_cut_s(Dinic& ne, int nodes)
 	return ret; 
 }
 
-//Conjunto del min cut de t, sin incluir al propio t
+// Conjunto del min cut de t, sin incluir al propio t
 vector<int> min_cut_t(Dinic& ne, int nodes)
 {
 	vector<int> ret;
@@ -21,12 +21,18 @@ vector<int> min_cut_t(Dinic& ne, int nodes)
 	return ret; 
 }
 
-//MM = max_flow = min_cut
-//Dado un grafo bipartito representado por la red ne
-//con nodes nodos, me da las aristas del matching máximo, en O(m)
-//nodos: [0..nodes-2)
-//s: nodes-2
-//t: nodes-1
+
+
+//------------------------------------------------------
+
+
+
+// MM = max_flow = min_cut
+// Dado un grafo bipartito representado por la red ne
+// con nodes nodos, me da las aristas del matching máximo, en O(m)
+// nodos: [0..nodes-2)
+// s: nodes-2
+// t: nodes-1
 vector<pii> mm_edges(Dinic& ne, int nodes)
 {
 	vector<pii> ret;
@@ -47,6 +53,12 @@ vector<pii> mm_edges(Dinic& ne, int nodes)
 
 	return ret;
 }
+
+
+
+//------------------------------------------------------
+
+
 
 //MM
 vector<int> min_vertex_cover(Dinic& ne, int nodes)
@@ -69,6 +81,12 @@ vector<int> min_vertex_cover(Dinic& ne, int nodes)
 	return ret;
 }
 
+
+
+//------------------------------------------------------
+
+
+
 //n - MM
 //Complemento del mvc
 vector<int> max_independent_set(Dinic& ne, int nodes)
@@ -90,6 +108,12 @@ vector<int> max_independent_set(Dinic& ne, int nodes)
 
 	return ret;
 }
+
+
+
+//------------------------------------------------------
+
+
 
 //n - MM
 vector<pii> min_edge_cover(Dinic& ne, int nodes)
@@ -144,18 +168,22 @@ vector<pii> min_edge_cover(Dinic& ne, int nodes)
 
 
 
-//Feasible (red fuertemente conexa con restricciones de mínimo y máximo en cada arista)
-ll demand[MAXN];        //Si el nodo i requiere que salga 2 de flujo más de lo que entra seteo demand[i] = -2, si requiere que salga 2 menos de lo que entra (se come el flujo) seteo demand[i] = 2
-ll M[MAXN];             //dif[i] - (suma(l entrantes) - suma(l salientes)).   -- se llena en feasible
-int a[MAXM], b[MAXM];   //aristas a[i]-b[i]
-ll l[MAXM], u[MAXM];    //con capacidad mínima l[i] y máxima u[i]
-ll mando[MAXM];         //Cuánto flujo mando por cada arista        -- se llena en feasible
-map<pii, int> ind;      //Para cada arista u-v, me da su i tal que a[i] = u y b[i] = v      -- se llena en feasible
+//------------------------------------------------------
 
-//Chequea si una red de flujo fuertemente conexa, sin s ni t, con restricciones de capacidades
-//mínimas y máximas en cada arista tiene algún flujo válido, y lo reconstruye en el array mando
-//n = cantidad de nodos
-//m = cantidad de aristas
+
+
+// Feasible (red fuertemente conexa con restricciones de mínimo y máximo en cada arista)
+ll demand[MAXN];        // Si el nodo i requiere que salga 2 de flujo más de lo que entra seteo demand[i] = -2, si requiere que salga 2 menos de lo que entra (se come el flujo) seteo demand[i] = 2
+ll M[MAXN];             // dif[i] - (suma(l entrantes) - suma(l salientes)).   -- se llena en feasible
+int a[MAXM], b[MAXM];   // aristas a[i]-b[i]
+ll l[MAXM], u[MAXM];    // con capacidad mínima l[i] y máxima u[i]
+ll mando[MAXM];         // Cuánto flujo mando por cada arista        -- se llena en feasible
+map<pii, int> ind;      // Para cada arista u-v, me da su i tal que a[i] = u y b[i] = v      -- se llena en feasible
+
+// Chequea si una red de flujo fuertemente conexa, sin s ni t, con restricciones de capacidades
+// mínimas y máximas en cada arista tiene algún flujo válido, y lo reconstruye en el array mando
+// n = cantidad de nodos
+// m = cantidad de aristas
 bool feasible(Dinic& ne, int n, int m)
 {
 	forn(i, n) M[i] = demand[i];
@@ -193,25 +221,4 @@ bool feasible(Dinic& ne, int n, int m)
     }
     
     return true;
-}
-
-//Devuelve el max flow de s a t haciendo binary
-ll max_bounded_flow(Dinic& ne, int n, int m, int s, int t)
-{
-	a[m] = s, b[m] = t;
-	u[n] = INF;
-
-	ll aa = 0, bb = INF;
-	
-	while(bb-aa > 1)
-	{
-		ll mid = (aa+bb) / 2;
-
-		l[n] = mid;
-		
-		if(feasible(ne, n, m+1)) aa = mid;
-		else                     bb = mid;
-	}
-
-	return aa;	//Last T
 }

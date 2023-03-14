@@ -9,14 +9,19 @@ struct Dinic
 {
 	int nodes, src, dst;
 	vector<int> dist, q, work;
-	struct edge {int to, rev; ll f, cap;};		//Se puede agregar un bool is_back, y solo hay que modificar add_edge
+	struct edge {int to, rev; ll f, cap;};		// Se puede agregar un bool is_back, y solo hay que modificar add_edge
 	vector<vector<edge>> g;
+	vector<ll> dd;
 	
-    Dinic(int x) : nodes(x), dist(x), q(x), work(x), g(x) {}
+    Dinic(int x) : nodes(x), dist(x+2), q(x+2), work(x+2), g(x+2), dd(x+2) {}
 	
-    void add_edge(int s, int t, ll cap)
+    void add_edge(int s, int t, ll cap, ll mincap = 0)
     {
-		g[s].pb((edge){t, sz(g[t]), 0, cap});
+		mincap = max(mincap, 0LL);
+		// assert(mincap<=cap);
+		dd[s] += mincap;
+		dd[t] -= mincap;
+		g[s].pb((edge){t, sz(g[t]),   0, cap-mincap});
 		g[t].pb((edge){s, sz(g[s])-1, 0, 0});
 	}
 	
@@ -64,5 +69,27 @@ struct Dinic
 		}
 		return result;
 	}
-};
 
+	ll max_flow_min_cap(int s, int t)
+	{
+		add_edge(t, s, INF);
+		
+		ll w = 0;
+		
+		nodes += 2;
+
+		forn(i, nodes)
+		{
+			if(dd[i] > 0) add_edge(i, nodes-1, dd[i]), w += dd[i];
+			else if(dd[i]<0) add_edge(nodes-2, i, -dd[i]);
+		}
+
+		if(max_flow(nodes-2, nodes-1) != w) return -1;
+		
+		nodes -= 2;
+		
+		forn(i, nodes) if(dd[i]) g[i].pp();
+
+		return max_flow(s,t);
+	}
+};
