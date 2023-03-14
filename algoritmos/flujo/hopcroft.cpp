@@ -13,10 +13,10 @@ bool bfs()
 	forn(i, n) if(mt2[i]<0) ds[i] = 0, q.push(i);
 	bool r = false;
 	while(not q.empty())
-    {
+	{
 		int x = q.front(); q.pop();
 		for(int y:g[x])
-        {
+		{
 			if(mt[y]>=0 and ds[mt[y]]<0) ds[mt[y]] = ds[x]+1, q.push(mt[y]);
 			else if(mt[y]<0) r = true;
 		}
@@ -27,7 +27,7 @@ bool bfs()
 bool dfs(int x)
 {
 	for(int y:g[x]) if(mt[y]<0 or (ds[mt[y]] == ds[x]+1 and dfs(mt[y])))
-    {
+	{
 		mt[y] = x; mt2[x] = y;
 		return true;
 	}
@@ -40,7 +40,7 @@ int mm()
 	int r = 0;
 	memset(mt, -1, sizeof(mt)); memset(mt2, -1, sizeof(mt2));
 	while(bfs())
-    {
+	{
 		forn(i, n) if(mt2[i]<0) r += dfs(i);
 	}
 	return r;

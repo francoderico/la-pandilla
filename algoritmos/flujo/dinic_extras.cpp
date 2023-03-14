@@ -189,36 +189,36 @@ bool feasible(Dinic& ne, int n, int m)
 	forn(i, n) M[i] = demand[i];
 
 	forn(i, m)
-    {
-        ne.add_edge(a[i], b[i], u[i]-l[i]); //Agregamos la arista con capacidad u-l
-        M[a[i]] += l[i];
-        M[b[i]] -= l[i];
+	{
+		ne.add_edge(a[i], b[i], u[i]-l[i]); //Agregamos la arista con capacidad u-l
+		M[a[i]] += l[i];
+		M[b[i]] -= l[i];
 
-        ind[{a[i], b[i]}] = i;
-    }
+		ind[{a[i], b[i]}] = i;
+	}
 
-    int s_ = n, t_ = n+1, nodes = n+2;
-    
-    forn(i, n)
-    {
-        if(M[i] < 0) ne.add_edge(s_, i, -M[i]);
-        if(M[i] > 0) ne.add_edge(i, t_,  M[i]);
-    }
+	int s_ = n, t_ = n+1, nodes = n+2;
+	
+	forn(i, n)
+	{
+		if(M[i] < 0) ne.add_edge(s_, i, -M[i]);
+		if(M[i] > 0) ne.add_edge(i, t_,  M[i]);
+	}
 
-    ne.max_flow(s_, t_);
-    
-    for(auto e : ne.g[s_]) if(e.f < e.cap) return false;
+	ne.max_flow(s_, t_);
+	
+	for(auto e : ne.g[s_]) if(e.f < e.cap) return false;
 
-    forn(i, n)
-    {
-        for(auto e : ne.g[i])
-        {
-            int j = e.to;
-            if(j == s_ or j == t_ or e.is_back) continue;
-            
-            mando[ind[{i, j}]] = l[ind[{i, j}]] + e.f;
-        }
-    }
-    
-    return true;
+	forn(i, n)
+	{
+		for(auto e : ne.g[i])
+		{
+			int j = e.to;
+			if(j == s_ or j == t_ or e.is_back) continue;
+			
+			mando[ind[{i, j}]] = l[ind[{i, j}]] + e.f;
+		}
+	}
+	
+	return true;
 }

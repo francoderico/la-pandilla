@@ -13,10 +13,10 @@ struct Dinic
 	vector<vector<edge>> g;
 	vector<ll> dd;
 	
-    Dinic(int x) : nodes(x), dist(x+2), q(x+2), work(x+2), g(x+2), dd(x+2) {}
+	Dinic(int x) : nodes(x), dist(x+2), q(x+2), work(x+2), g(x+2), dd(x+2) {}
 	
-    void add_edge(int s, int t, ll cap, ll mincap = 0)
-    {
+	void add_edge(int s, int t, ll cap, ll mincap = 0)
+	{
 		mincap = max(mincap, 0LL);
 		// assert(mincap<=cap);
 		dd[s] += mincap;
@@ -25,15 +25,15 @@ struct Dinic
 		g[t].pb((edge){s, sz(g[s])-1, 0, 0});
 	}
 	
-    bool dinic_bfs()
-    {
+	bool dinic_bfs()
+	{
 		fill(all(dist), -1); dist[src] = 0;
 		int qt = 0; q[qt++] = src;
 		for(int qh = 0; qh<qt; qh++)
-        {
+		{
 			int u = q[qh];
 			forn(i, sz(g[u]))
-            {
+			{
 				edge &e = g[u][i]; int v = g[u][i].to;
 				if(dist[v]<0 and e.f<e.cap) dist[v] = dist[u]+1, q[qt++] = v;
 			}
@@ -41,16 +41,16 @@ struct Dinic
 		return dist[dst] >= 0;
 	}
 	
-    ll dinic_dfs(int u, ll f)
-    {
+	ll dinic_dfs(int u, ll f)
+	{
 		if(u == dst)return f;
 		for(int &i = work[u]; i<sz(g[u]); i++)
-        {
+		{
 			edge &e = g[u][i];
 			if(e.cap <= e.f)continue;
 			int v = e.to;
 			if(dist[v] == dist[u]+1)
-            {
+			{
 				ll df = dinic_dfs(v, min(f, e.cap-e.f));
 				if(df > 0){e.f += df; g[v][e.rev].f -= df; return df;}
 			}
@@ -58,12 +58,12 @@ struct Dinic
 		return 0;
 	}
 	
-    ll max_flow(int _src, int _dst)
-    {
+	ll max_flow(int _src, int _dst)
+	{
 		src = _src; dst = _dst;
 		ll result = 0;
 		while(dinic_bfs())
-        {
+		{
 			fill(all(work), 0);
 			while(ll delta = dinic_dfs(src, INF)) result += delta;
 		}
