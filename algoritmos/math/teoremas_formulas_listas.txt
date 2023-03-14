@@ -1,0 +1,70 @@
+Lista de números con mayor cantidad de divisores hasta 10^n
+1    6                        4
+2    60                       12
+3    840                      32
+4    7560                     64
+5    83160                    128
+6    720720                   240
+7    8648640                  448
+8    73513440                 768
+9    735134400                1344
+10   6983776800               2304
+11   97772875200              4032
+12   963761198400             6720
+13   9316358251200            10752
+14   97821761637600           17280
+15   866421317361600          26880
+16   8086598962041600         41472
+17   74801040398884800        64512
+18   897612484786617600       103680
+
+Ampliación de la lista anterior: highly composite numbers, números con mayor
+cantidad de divisores que cualquiera menor, mostrados como (n, cant de divisores)
+(1,1) (2,2) (4,3) (6,4) (12,6) (24,8) (36,9) (48,10) (60,12) (120,16) (180,18) (240,20) (360,24) (720,30) (840,32) (1260,36) (1680,40) (2520,48) (5040,60) (7560,64) (10080,72) (15120,80) (20160,84) (25200,90) (27720,96) (45360,100) (50400,108) (55440,120) (83160,128) (110880,144) (166320,160) (221760,168) (277200,180) (332640,192) (498960,200) (554400,216) (665280,224) (720720,240) (1081080,256) (1441440,288) (2162160,320) (2882880,336) (3603600,360) (4324320,384) (6486480,400) (7207200,432) (8648640,448) (10810800,480) (14414400,504) (17297280,512) (21621600,576) (32432400,600) (36756720,640) (43243200,672) (61261200,720) (73513440,768) (110270160,800) (122522400,864) (147026880,896) (183783600,960) (245044800,1008) (294053760,1024) (367567200,1152) (551350800,1200) (698377680,1280) (735134400,1344) (1102701600,1440) (1396755360,1536) (2095133040,1600) (2205403200,1680) (2327925600,1728) (2793510720,1792) (3491888400,1920) (4655851200,2016) (5587021440,2048) (6983776800,2304) (10475665200,2400) (13967553600,2688) (20951330400,2880) (27935107200,3072) (41902660800,3360) (48886437600,3456) (64250746560,3584) (73329656400,3600) (80313433200,3840) (97772875200,4032) (128501493120,4096) (146659312800,4320) (160626866400,4608) (240940299600,4800) (293318625600,5040) (321253732800,5376) (481880599200,5760) (642507465600,6144) (963761198400,6720)
+
+Lista de pi(10^n), o sea, cantidad de primos <= 10^n (~ n/log(n)):
+1	                     4
+2	                    25
+3	                   168
+4	                 1'229
+5	                 9'592
+6	                78'498
+7	               664'579
+8	             5'761'455
+9	            50'847'534
+10	           455'052'511
+11	         4'118'054'813
+12	        37'607'912'018
+13	       346'065'536'839
+14	     3'204'941'750'802
+15	    29'844'570'422'669
+16	   279'238'341'033'925
+17	 2'623'557'157'654'233
+18	24'739'954'287'740'860
+
+n / phi(n-1) ~ log log n
+
+La menor raíz primitiva de un primo p es ~ log^6 p
+
+If g is a primitive root modulo p, then g is also a primitive root modulo all powers p^k unless g^(p−1) ≡ 1 (mod p^2); in that case, g + p is.
+If g is a primitive root modulo p^k, then g is also a primitive root modulo all smaller powers of p.
+If g is a primitive root modulo p^k, then either g or g + p^k (whichever one is odd) is a primitive root modulo 2p^k.
+
+Teoremas:
+(Tutte) A graph G = (V, E) has a perfect matching if and only if for every subset U of V, the subgraph induced by V - U has at most |U| connected components with an odd number of vertices.
+(Petersen) Every cubic, bridgeless graph contains a perfect matching.
+(Dilworth) In any finite partially ordered set, the maximum number of elements in any antichain equals the minimum number of chains in any partition of the set into chains
+(Hall) Un grafo bipartito (A, B) tiene matching perfecto sii para cada subconjunto X de A, |vecinos(X)| >= |X|.
+(Pick) A = I + B/2 -1  (area of polygon, points inside, points on border)
+
+
+If a is a primitive root modulo the prime p, then a^((p-1)/2) = -1 (mod p) (ya que que a^2 = 1 (mod p) => a = +-1 (mod p), y al ser raíz primitiva no puede ser 1).
+
+For a prime number p the sum of its primitive roots is congruent to μ(p − 1) (mod p).
+For a prime number p (with the sole exception of p = 3), the product of its primitive roots is congruent to 1 (mod p).
+
+The Möbius function is multiplicative (i.e., μ(ab) = μ(a) μ(b)) whenever a and b are coprime.
+
+The sum of the Möbius function over all positive divisors of n (including n itself and 1) is zero except when n = 1:
+
+
