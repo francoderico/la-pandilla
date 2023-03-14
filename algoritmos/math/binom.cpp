@@ -1,4 +1,4 @@
-// También contiene el precálculo de los inversos modulares
+// Tambien contiene el precalculo de los inversos modulares
 ll fact[MAXN], invfact[MAXN], inv[MAXN];
 
 void calc()
@@ -26,7 +26,7 @@ ll binom(ll n, ll k)
 
 
 
-// Triángulo de Pascal
+// Triangulo de Pascal
 const ll MAXN = 3e3+10; //68 MB, con 1e4 int son 380 MB
 
 ll C[MAXN][MAXN];

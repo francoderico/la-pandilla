@@ -147,7 +147,7 @@ struct Fenwick  //0-indexed
     vector<int> tree;
     Fenwick(int n_) : n(n_), tree(n_+1, 0) {}
 
-    void upd(int i, int x)  //Le sumo x al elemento en posición i
+    void upd(int i, int x)  //Le sumo x al elemento en posicion i
     {
         for(i += 1; i <= n; i += i & -i) tree[i] += x;
     }

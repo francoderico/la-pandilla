@@ -1,4 +1,4 @@
-// Triángulo de Pascal
+// Triangulo de Pascal
 const ll MAXP = 3e3+10; //68 MB, con 1e4 int son 380 MB
 
 ll P;				//inicializar con el primo del input < MAXP

@@ -1,5 +1,5 @@
 vector<int> g[MAXN];
-bool vis[MAXN], art[MAXN];  	//art[i] = true sii i es de articulación
+bool vis[MAXN], art[MAXN];  	//art[i] = true sii i es de articulacion
 int low[MAXN], tag[MAXN];
 int parent[MAXN];   		//Inicializar en -1
 int idx = 0;

@@ -35,14 +35,14 @@ const ld PI = acosl(-1);
 
 //dist: una vez que tiramos el flujo, me dice la distancia desde S, sin ponderar
 
-//Las aristas e de la red residual tienen e.cap = 0 y e.f = -(flujo en la otra dirección).
+//Las aristas e de la red residual tienen e.cap = 0 y e.f = -(flujo en la otra direccion).
 //Por ejemplo, si la arista u-v termina tirando 3 de flujo, la arista v-u de la residual tiene -3.
 
 //Min cut: nodes with dist>=0 (S y todos los alcanzables) vs nodes with dist == -1
-//Matching máximo
+//Matching maximo
 //min vertex cover: left nodes with dist == -1 + right nodes with dist>0
 //MAX independent set: complemento del mvc, o sea, left nodes with dist>0 + right nodes with dist == -1
-//min edge cover: MM + una arista cualquiera por cada otro nodo (es imposible sii hay algún nodo sin aristas)
+//min edge cover: MM + una arista cualquiera por cada otro nodo (es imposible sii hay algun nodo sin aristas)
 struct Dinic
 {
 	int nodes, src, dst;
@@ -106,16 +106,16 @@ struct Dinic
 };
 
 
-//Feasible (red fuertemente conexa con restricciones de mínimo y máximo en cada arista)
-ll demand[MAXN];        //Si el nodo i requiere que salga 2 de flujo más de lo que entra seteo demand[i] = -2, si requiere que salga 2 menos de lo que entra (se come el flujo) seteo demand[i] = 2
+//Feasible (red fuertemente conexa con restricciones de minimo y maximo en cada arista)
+ll demand[MAXN];        //Si el nodo i requiere que salga 2 de flujo mas de lo que entra seteo demand[i] = -2, si requiere que salga 2 menos de lo que entra (se come el flujo) seteo demand[i] = 2
 ll M[MAXN];             //dif[i] - (suma(l entrantes) - suma(l salientes)).   -- se llena en feasible
 int a[MAXM], b[MAXM];   //aristas a[i]-b[i]
-ll l[MAXM], u[MAXM];    //con capacidad mínima l[i] y máxima u[i]
-ll mando[MAXM];         //Cuánto flujo mando por cada arista        -- se llena en feasible
+ll l[MAXM], u[MAXM];    //con capacidad minima l[i] y maxima u[i]
+ll mando[MAXM];         //Cuanto flujo mando por cada arista        -- se llena en feasible
 map<pii, int> ind;      //Para cada arista u-v, me da su i tal que a[i] = u y b[i] = v      -- se llena en feasible
 
 //Chequea si una red de flujo fuertemente conexa, sin s ni t, con restricciones de capacidades
-//mínimas y máximas en cada arista tiene algún flujo válido, y lo reconstruye en el array mando
+//minimas y maximas en cada arista tiene algun flujo valido, y lo reconstruye en el array mando
 //n = cantidad de nodos
 //m = cantidad de aristas
 bool feasible(Dinic& ne, int n, int m)

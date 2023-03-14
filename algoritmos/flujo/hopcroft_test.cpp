@@ -30,9 +30,9 @@ const ll MOD = 1e9+7;
 const ld EPS = 1e-9;
 const ld PI = acosl(-1);
 
-//Matching máximo en bipartito en O(sqrt(V) E)
-//Caso especial de Dinic pero más rápido, menos memoria y más corto
-//Los vértices izquierdos están numerados en [0, n), los derechos en [0, m)
+//Matching maximo en bipartito en O(sqrt(V) E)
+//Caso especial de Dinic pero mas rapido, menos memoria y mas corto
+//Los vertices izquierdos estan numerados en [0, n), los derechos en [0, m)
 int n, m;               //SETEAR
 vector<int> g[MAXN];    // [0,n)->[0,m)
 int mt[MAXN], mt2[MAXN], ds[MAXN];

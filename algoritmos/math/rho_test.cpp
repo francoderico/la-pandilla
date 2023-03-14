@@ -92,7 +92,7 @@ ll rho(ll n)
 	ll c = rand()%n + 1;
 	while(d == 1)
 	{
-		// Si se necesita más velocidad, agregar addmod en estas 3 líneas
+		// Si se necesita mas velocidad, agregar addmod en estas 3 lineas
 		x = (mulmod(x, x, n)+c) % n;
 		y = (mulmod(y, y, n)+c) % n;
 		y = (mulmod(y, y, n)+c) % n;
@@ -102,7 +102,7 @@ ll rho(ll n)
 	return d == n ? rho(n) : d;
 }
 
-// La única función que tengo que llamar.
+// La unica funcion que tengo que llamar.
 // Ojo que no se puede hacer clear adentro porque es recursiva
 // O((log n)^3)
 void fact(ll n, map<ll, int> &F)

@@ -33,7 +33,7 @@ const ld PI = acosl(-1);
 typedef long double td; typedef vector<int> vi; typedef vector<td> vd;
 const td INF = 0;       //for maximum set INF to 0, and negate costs
 bool zero(td x) {return fabs(x) < 1e-9;}    //change to x==0, for ints/ll
-vector<pii> ans;        //Guarda las aristas usadas en la asignación (cada arista es [0..n)-[0..m))
+vector<pii> ans;        //Guarda las aristas usadas en la asignacion (cada arista es [0..n)-[0..m))
 
 struct Hungarian
 {

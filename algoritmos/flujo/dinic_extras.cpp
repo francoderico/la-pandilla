@@ -1,9 +1,9 @@
 // Min cut: nodes with dist>=0 (S y todos los alcanzables) vs nodes with dist == -1
-// Matching máximo
+// Matching maximo
 // min vertex cover: left nodes with dist == -1 + right nodes with dist>0
 // MAX independent set: complemento del mvc, o sea, left nodes with dist>0 + right nodes with dist == -1
-// min edge cover: MM + una arista cualquiera por cada otro nodo (es imposible sii hay algún nodo sin aristas)
-// Feasible (red fuertemente conexa con restricciones de mínimo y máximo en cada arista)
+// min edge cover: MM + una arista cualquiera por cada otro nodo (es imposible sii hay algun nodo sin aristas)
+// Feasible (red fuertemente conexa con restricciones de minimo y maximo en cada arista)
 
 // Conjunto del min cut de s, sin incluir al propio s
 vector<int> min_cut_s(Dinic& ne, int nodes)
@@ -29,7 +29,7 @@ vector<int> min_cut_t(Dinic& ne, int nodes)
 
 // MM = max_flow = min_cut
 // Dado un grafo bipartito representado por la red ne
-// con nodes nodos, me da las aristas del matching máximo, en O(m)
+// con nodes nodos, me da las aristas del matching maximo, en O(m)
 // nodos: [0..nodes-2)
 // s: nodes-2
 // t: nodes-1
@@ -41,9 +41,9 @@ vector<pii> mm_edges(Dinic& ne, int nodes)
 	for(auto e : ne.g[s])	//x: todos los nodos izquierdos
 	{
 		int x = e.to;
-		if(e.f == 1)		//La arista desde s está usada
+		if(e.f == 1)		//La arista desde s esta usada
 		{
-			for(auto d : ne.g[x]) if(d.f == 1)	//Busco la arista que salga de x y esté usada
+			for(auto d : ne.g[x]) if(d.f == 1)	//Busco la arista que salga de x y este usada
 			{
 				ret.pb({x, d.to});
 				break;
@@ -121,12 +121,12 @@ vector<pii> min_edge_cover(Dinic& ne, int nodes)
 	vector<pii> ret;
 	int s = nodes-2, t = nodes-1; 
 
-	forn(x, s) if(sz(ne.g[x]) == 1) return ret;		//No se puede, hay algún nodo sin aristas (solo está unido con s o con t)
+	forn(x, s) if(sz(ne.g[x]) == 1) return ret;		//No se puede, hay algun nodo sin aristas (solo esta unido con s o con t)
 
 	for(auto e : ne.g[s])	//x: todos los nodos izquierdos
 	{
 		int x = e.to;
-		if(e.f == 1)		//La arista s-x está usada, o sea que x parte del MM: agrego su arista
+		if(e.f == 1)		//La arista s-x esta usada, o sea que x parte del MM: agrego su arista
 		{
 			for(auto d : ne.g[x]) if(d.f == 1)
 			{
@@ -134,7 +134,7 @@ vector<pii> min_edge_cover(Dinic& ne, int nodes)
 				break;
 			}
 		}
-		else				//Si NO está usada, x NO es parte del MM: agrego una arista cualquiera
+		else				//Si NO esta usada, x NO es parte del MM: agrego una arista cualquiera
 		{
 			for(auto d : ne.g[x])
 			{
@@ -150,7 +150,7 @@ vector<pii> min_edge_cover(Dinic& ne, int nodes)
 	for(auto e : ne.g[t])	//x: todos los nodos derechos
 	{
 		int x = e.to;
-		if(e.f != -1)		//La arista x-t NO está usada, o sea que x NO parte del MM: agrego una arista cualquiera
+		if(e.f != -1)		//La arista x-t NO esta usada, o sea que x NO parte del MM: agrego una arista cualquiera
 		{
 			for(auto d : ne.g[x])
 			{
@@ -172,16 +172,16 @@ vector<pii> min_edge_cover(Dinic& ne, int nodes)
 
 
 
-// Feasible (red fuertemente conexa con restricciones de mínimo y máximo en cada arista)
-ll demand[MAXN];        // Si el nodo i requiere que salga 2 de flujo más de lo que entra seteo demand[i] = -2, si requiere que salga 2 menos de lo que entra (se come el flujo) seteo demand[i] = 2
+// Feasible (red fuertemente conexa con restricciones de minimo y maximo en cada arista)
+ll demand[MAXN];        // Si el nodo i requiere que salga 2 de flujo mas de lo que entra seteo demand[i] = -2, si requiere que salga 2 menos de lo que entra (se come el flujo) seteo demand[i] = 2
 ll M[MAXN];             // dif[i] - (suma(l entrantes) - suma(l salientes)).   -- se llena en feasible
 int a[MAXM], b[MAXM];   // aristas a[i]-b[i]
-ll l[MAXM], u[MAXM];    // con capacidad mínima l[i] y máxima u[i]
-ll mando[MAXM];         // Cuánto flujo mando por cada arista        -- se llena en feasible
+ll l[MAXM], u[MAXM];    // con capacidad minima l[i] y maxima u[i]
+ll mando[MAXM];         // Cuanto flujo mando por cada arista        -- se llena en feasible
 map<pii, int> ind;      // Para cada arista u-v, me da su i tal que a[i] = u y b[i] = v      -- se llena en feasible
 
 // Chequea si una red de flujo fuertemente conexa, sin s ni t, con restricciones de capacidades
-// mínimas y máximas en cada arista tiene algún flujo válido, y lo reconstruye en el array mando
+// minimas y maximas en cada arista tiene algun flujo valido, y lo reconstruye en el array mando
 // n = cantidad de nodos
 // m = cantidad de aristas
 bool feasible(Dinic& ne, int n, int m)

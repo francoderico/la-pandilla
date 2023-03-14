@@ -30,7 +30,7 @@ const ll MOD = 1e9+7;
 const ld EPS = 1e-9;
 const ld PI = acosl(-1);
 
-//De todos los flujos máximos, me da el de costo mínimo en O(n^2 m^2)
+//De todos los flujos maximos, me da el de costo minimo en O(n^2 m^2)
 typedef ll tf;
 typedef ll tc;
 const tf INFFLOW = 1e9;
@@ -99,15 +99,15 @@ struct MCF
 int b[MAXN];
 unordered_map<char, int> cant;
 
-//El flujo máximo va a ser n, y va a representar dónde ubicamos cada letra.
+//El flujo maximo va a ser n, y va a representar donde ubicamos cada letra.
 //El costo va a representar lo que perdemos de beauty, resulta ans = suma(b[i]) - cost.
-//En cada posición puedo poner 1 letra, con costo 0 si es igual a la que había ahí originalmente, y b[i]
+//En cada posicion puedo poner 1 letra, con costo 0 si es igual a la que habia ahi originalmente, y b[i]
 //si es distinta.
 //Ponemos un nodo por cada letra del alfabeto, y tiramos la arista (s, letra, cant de esa letra, 0).
-//Si tenemos, por ejemplo, 5 letras 'a', no podemos poner una en la posición i y otra en n/2-i-1 porque quedaría palíndromo.
+//Si tenemos, por ejemplo, 5 letras 'a', no podemos poner una en la posicion i y otra en n/2-i-1 porque quedaria palindromo.
 //Entonces metemos un nodo v en el medio para kimitar esto, y para cada letra tiramos (letra, v, 1, 0), y para las 2 posiciones
-//i y n-i-1 tiramos (v, i, 1, costo), con costo 0 si es igual a la que había ahí originalmente, y b[i] si es distinta.
-//Y para cada posición i tiramos (i, t, 1, 0).
+//i y n-i-1 tiramos (v, i, 1, costo), con costo 0 si es igual a la que habia ahi originalmente, y b[i] si es distinta.
+//Y para cada posicion i tiramos (i, t, 1, 0).
 void solve()
 {
     int n; cin >> n;

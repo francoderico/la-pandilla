@@ -38,7 +38,7 @@ void dfs(int v)
 
 // Otro enfoque, en O(n*MAXG + m)
 // MAXG es la menor potencia de 2 mayor a sqrt(m).
-// Es decir, 1 más que el máximo xor de grundys alcanzable.
+// Es decir, 1 mas que el maximo xor de grundys alcanzable.
 const int MAXG = 512;
 bool vis[MAXN];
 int grundy[MAXN];

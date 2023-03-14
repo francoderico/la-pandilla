@@ -17,7 +17,7 @@ pll extended_euclid(ll a, ll b)
 	return {x, y};
 }
 
-// Genera las soluciones de a*x + b*y = r, con r múltiplo del gcd
+// Genera las soluciones de a*x + b*y = r, con r multiplo del gcd
 pair<pll, pll> diophantine(ll a, ll b, ll r)
 {
 	ll d = gcd(a, b);
