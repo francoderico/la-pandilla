@@ -52,7 +52,7 @@ void solve() {
 		}
 		return y;
 	};
-	cout<<AdaptativeSimpson<double>(cut, 7.9, 5e-8).integrate(a, b, 4e-4)<<'\n';
+	cout<<AdaptiveSimpson<double>(cut, 7.9, 5e-8).integrate(a, b, 4e-4)<<'\n';
 }
 
 int main() {

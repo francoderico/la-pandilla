@@ -12,13 +12,13 @@ Real composite_simpson(
 	return (s + f(b)) * h / 3.0;
 }
 
-/// Alternative integration method where the integration range is divided into
-/// unequal subdivisions depending on some input parameters, which may result
-/// in a faster and/or more precise approximation of the integral than the
-/// simpler composite method as it uses fewer function evaluations in places
-/// where the function is well approximated by a cubic function.
+/// Alternative integration method that works by dividing-and-conquering the
+/// integration range until each segment is well approximated by a parabola.
+///
+/// It might be faster or more accurate than the composite method, specially
+/// when the function to integrate takes a long time to evaluate.
 template<typename Real=double>
-class AdaptativeSimpson {
+class AdaptiveSimpson {
 	using function_type = function<Real(Real)>;
 	// Function to integrate.
 	function_type f;
@@ -64,7 +64,7 @@ class AdaptativeSimpson {
 		);
 	}
 public:
-	AdaptativeSimpson(
+	AdaptiveSimpson(
 		function_type _f,
 		const Real _min_width=std::numeric_limits<Real>::infinity(),
 		const Real _min_eps=1e-19
