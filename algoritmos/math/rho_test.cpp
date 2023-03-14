@@ -34,14 +34,22 @@ ll gcd(ll a, ll b) {return a ? gcd(b%a, a) : b;}
 
 ll mulmod(ll b, ll a, ll m)
 {
+	// Si el producto entra en ll, quitar el casteo
 	return __int128(a)*b % m;
 }
 
 ll expmod(ll b, ll e, ll m)
 {
-	if(!e) return 1;
-	ll q = expmod(b, e/2, m); q = mulmod(q, q, m);
-	return e&1 ? mulmod(b, q, m) : q;
+	ll res = 1;
+ 
+	while (e)
+	{
+		if (e%2) res = mulmod(res, b, m);
+		b = mulmod(b, b, m);
+		e /= 2;
+	}
+	
+	return res;
 }
 
 bool es_primo_prob(ll n, int a)
@@ -59,14 +67,15 @@ bool es_primo_prob(ll n, int a)
 		if(x == 1) return false;
 		if(x+1 == n) return true;
 	}
+	
 	return false;
 }
 
-bool rabin(ll n)	//true iff n is prime
+bool rabin(ll n)	// true sii n es primo
 {
 	if(n == 1) return false;
-	int ar[] = {2,3,5,7,11,13,17,19,23};
-	forr(i, 0, 9) if(!es_primo_prob(n, ar[i])) return false;
+	int ar[] = {2,3,5,7,11};
+	fore(p, ar) if(!es_primo_prob(n, p)) return false;
 	return true;
 }
 
@@ -77,6 +86,7 @@ ll rho(ll n)
 	ll c = rand()%n + 1;
 	while(d == 1)
 	{
+		// Si se necesita más velocidad, agregar addmod en estas 3 líneas
 		x = (mulmod(x, x, n)+c) % n;
 		y = (mulmod(y, y, n)+c) % n;
 		y = (mulmod(y, y, n)+c) % n;
@@ -99,17 +109,17 @@ void fact(ll n, map<ll, int> &F)
 // Auxiliar, no llamar
 void divisores_aux(const map<ll, int> &F, vector<ll> &divs, map<ll, int>::iterator it, ll n = 1)
 {
-    if(it == F.begin()) divs.clear();
-    if(it == F.end()) { divs.pb(n); return; }
-    ll p = it->fst, k = it->snd; ++it;
-    forn(_, k+1) divisores_aux(F, divs, it, n), n *= p;
+	if(it == F.begin()) divs.clear();
+	if(it == F.end()) { divs.pb(n); return; }
+	ll p = it->fst, k = it->snd; ++it;
+	forn(_, k+1) divisores_aux(F, divs, it, n), n *= p;
 }
 
 // Obtiene los divisores a partir de la factorizacion.
 // NO ESTA ORDENADO
 void divisores(map<ll, int> &F, vector<ll> &divs)
 {
-    divisores_aux(F, divs, F.begin());
+	divisores_aux(F, divs, F.begin());
 }
 
 
