@@ -8,9 +8,16 @@ ll mulmod(ll b, ll a, ll m)
 
 ll expmod(ll b, ll e, ll m)
 {
-	if(!e) return 1;
-	ll q = expmod(b, e/2, m); q = mulmod(q, q, m);
-	return e&1 ? mulmod(b, q, m) : q;
+	ll res = 1;
+ 
+	while (e)
+	{
+		if (e%2) res = mulmod(res, b, m);
+		b = mulmod(b, b, m);
+		e /= 2;
+	}
+	
+	return res;
 }
 
 bool es_primo_prob(ll n, int a)
@@ -28,14 +35,15 @@ bool es_primo_prob(ll n, int a)
 		if(x == 1) return false;
 		if(x+1 == n) return true;
 	}
+	
 	return false;
 }
 
 bool rabin(ll n)	// true sii n es primo
 {
 	if(n == 1) return false;
-	int ar[] = {2,3,5,7,11,13,17,19,23};
-	forr(i, 0, 9) if(!es_primo_prob(n, ar[i])) return false;
+	int ar[] = {2,3,5,7,11};
+	fore(p, ar) if(!es_primo_prob(n, p)) return false;
 	return true;
 }
 
