@@ -26,7 +26,7 @@ struct ChullTrick {
 	bool add(ll m, ll b) {
 		auto it = lines.insert(false);
 		it->it = it; it->end = lines.end();
-		if (covered(it)) { lines.erase(it); return {false, 0, 0}; }
+		if (covered(it)) { lines.erase(it); return false; }
 		while (next(it) != lines.end() && covered(next(it))) lines.erase(next(it));
 		while (it != lines.begin() && covered(prev(it))) lines.erase(prev(it));
 		return true;
