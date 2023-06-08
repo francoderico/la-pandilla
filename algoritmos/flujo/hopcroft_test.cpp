@@ -61,7 +61,7 @@ struct Hopcroft{
 	}
 	int mm(){
 		int r = 0;
-		inv.assign(m, -1), mt.assign(n, -1);
+		mt.assign(n, -1), inv.assign(m, -1);
 		while(bfs()) forn(i, n) if(mt[i]<0) r += dfs(i);
 		return r;
 	}
