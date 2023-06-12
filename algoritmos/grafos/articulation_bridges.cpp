@@ -14,6 +14,7 @@ void dfs(int v){
 			low[v] = min(low[v], low[x]);
 		}
 		else low[v] = min(low[v], tag[x]); //NO es igual a la de arriba
+		if(low[x] <= tag[v]) /* La arista v-x no es bridge - pensar una representacion comoda */
 	}
 }
 // LLena el array art - considera a los nodos de grado 0 como false
