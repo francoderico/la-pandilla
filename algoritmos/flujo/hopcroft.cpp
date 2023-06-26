@@ -5,7 +5,8 @@ struct Hopcroft{
 	vector<vector<int>> g;    // [0,n)->[0,m)
 	vector<int> mt, inv, ds;  // mt  : [0..n) -> [0..m) contiene el matching n-m
 	                          // inv : [0..m) -> [0..n) contiene el matching inverso	
-	Hopcroft(int n_, int m_) : n(n_), m(m_), g(n_) {}
+	void init(int n_, int m_) { n = n_, m = m_, g.resize(n_); }
+	void add_edge(int u, int v) { g[u].pb(v); }
 	bool bfs(){
 		ds.assign(n, -1); queue<int> q;
 		forn(i, n) if(mt[i]<0) ds[i] = 0, q.push(i);
