@@ -92,3 +92,19 @@ vector<pt> chull(vector<pt> ps) {
 	ps.resize(j);
 	return ps;
 }
+
+// O(logN) -- solo poligonos convexos
+// incluye el borde
+// no debe haber puntos colineales consecutivos
+bool poligono_contiene(vector<pt> const& a, pt p) {
+	if (cw(a[0], a[1], p)) return false;
+	if (ccw(a[0], a.back(), p)) return false;
+	int lo = 1;
+	int hi = sz(a)-1;
+	while (hi - lo > 1) {
+		int mi = (hi+lo)/2;
+		if (ccw(a[0], a[mi], p)) lo = mi;
+		else                     hi = mi;
+	}
+	return !cw(a[lo], a[hi], p);
+}
