@@ -3,52 +3,95 @@ using namespace std;
 
 #define forr(i,a,b) for(int i=int(a);i<int(b);++i)
 #define forn(i,n) forr(i,0,n)
-#define dforr(i,a,b) for(int i=int(b)-1;i>=int(a);--i)
-#define dforn(i,n) dforr(i,0,n)
-#define fore(e,c) for(const auto &e : (c))
-#define db(v) cerr<<#v" = "<<(v)<<'\n'
-#define nn cout<<'\n'
 #define sz(v) (int(v.size()))
 #define all(v) begin(v), end(v)
-#define pb push_back
-#define pp pop_back
-#define fst first
-#define snd second
 
 typedef long long ll;
-typedef unsigned long long ull;
-typedef long double ld;
-typedef pair<int,int> pii;
-typedef pair<ll,ll> pll;
 
-const ll MAXN = 2e5+100;
-const ll INF = 1e18+100;
-const ll MOD = 1e9+7;
-const ld EPS = 1e-9;
-const ld PI = acosl(-1);
+// representamos poligonos con vector<pt>
+// los poligonos son siempre contra-reloj
 
-template<typename T>
-ostream& operator<<(ostream& o, vector<T> const& v) {
-	o << "[ ";
-	for (auto const& x : v)
-		o << x << " ";
-	return o << "]";
+using Sc = ll; // scalar, asi se puede cambiar por double u otra cosa si hace falta
+struct pt { Sc x, y; };
+
+pt operator+ (pt const& a, pt const& b) { return {a.x + b.x, a.y + b.y}; } // suma
+pt operator- (pt const& a, pt const& b) { return {a.x - b.x, a.y - b.y}; } // diferencia
+pt operator* (Sc const& x, pt const& p) { return {x * p.x, x * p.y}; } // producto por un escalar
+bool operator<(pt const& a, pt const& b) { return a.y != b.y ? a.y < b.y : a.x < b.x; }
+bool operator==(pt const& a, pt const& b) { return a.x == b.x && a.y == b.y; }
+
+Sc det(pt const& a, pt const& b) { return a.x*b.y - a.y*b.x; } // determinante
+Sc dot(pt const& a, pt const& b) { return a.x*b.x + a.y*b.y; } // producto escalar
+double len(pt const& p) { return hypot(p.x, p.y); } // modulo
+Sc len_sq(pt const& p) { return dot(p, p); } // modulo cuadrado
+
+// responde si, centrado en o, ir de a hacia b es un giro contra-reloj
+bool ccw(pt const& o, pt const& a, pt const& b) { return det(a - o, b - o) > 0; }
+// responde si, centrado en o, ir de a hacia b es un giro como el reloj
+bool cw(pt const& o, pt const& a, pt const& b) { return det(a - o, b - o) < 0; }
+// responde si el punto o pertence a la recta ab
+bool en_recta(pt const& o, pt const& a, pt const& b) { return det(a-o, b-o) == 0; }
+
+// devuelve el cuadrante del angulo que
+// forma el punto x con la semirrecta ab
+int cuadrante(pt const& a, pt const& b, pt const& x) {
+	pt d1 = b-a, d2 = x-a;
+	Sc det12 = det(d1, d2);
+	Sc dot12 = dot(d1, d2);
+	if (det12 >= 0 && dot12 > 0) return 1;
+	if (det12 > 0 && dot12 <= 0) return 2;
+	if (det12 <= 0 && dot12 < 0) return 3;
+	if (det12 < 0 && dot12 >= 0) return 4;
+	return -1;
 }
 
-template<typename T, typename U>
-ostream& operator<<(ostream& o, pair<T, U> const& p) {
-	return o
-	<< "("
-	<< p.fst
-	<< ","
-	<< " "
-	<< p.snd
-	<< ")"
-	;
+// devuelve un comparador que ordena segun angulo
+// alrededor de la recta ab
+auto por_angulo(pt const& a, pt const& b) {
+	return [=](pt const& x, pt const& y) {
+		int cx = cuadrante(a,b,x);
+		int cy = cuadrante(a,b,y);
+		if (cx != cy) return cx < cy;
+		Sc d = det(x-a, y-a);
+		if (d != 0) return d > 0;
+		return len_sq(x-a) < len_sq(y-a); // el mas corto primero
+	};
 }
 
-#include "utils.cpp"
-#include "minkowski.cpp"
+// Borra puntos consecutivos colineales
+void borrar_colineales(vector<pt>& a) {
+	int j = 1;
+	forr(i, 1, sz(a))
+		if (!en_recta(a[i], a[j-1], a[(i+1)%sz(a)]))
+			a[j++] = a[i];
+	a.resize(j);
+}
+
+auto orden_radial = por_angulo(pt{0,0}, pt{1,0});
+
+vector<pt> offsets(vector<pt> const& a) {
+	vector<pt> da(sz(a));
+	forn(i, sz(a)-1) da[i] = a[i+1] - a[i];
+	da.back() = a[0] - a.back();
+	rotate(begin(da), min_element(all(da), orden_radial), end(da));
+	return da;
+}
+
+// Minkowski-sum of convex polygons
+vector<pt> minkowski(vector<pt> const& a, vector<pt> const& b) {
+
+	vector<pt> da = offsets(a), db = offsets(b);
+	vector<pt> dc(sz(da)+sz(db));
+	merge(all(da), all(db), begin(dc), orden_radial);
+
+	vector<pt> c(sz(dc));
+	c[0] = *min_element(all(a)) + *min_element(all(b));
+	forn(i, sz(c)-1) c[i+1] = c[i] + dc[i];
+
+	borrar_colineales(c);
+
+	return c;
+}
 
 vector<pt> twice(vector<pt> a) {
 	for (auto& p : a) p = 2*p;
@@ -67,7 +110,7 @@ bool poly_contains(vector<pt> const& a, pt p) {
 	int hi = sz(a)-1;
 	while (hi - lo > 1) {
 		int mi = (hi+lo)/2;
-		if (ccw(a[0], a[mi], p)) lo = mi;
+		if (!cw(a[0], a[mi], p)) lo = mi;
 		else                     hi = mi;
 	}
 	return !cw(a[lo], a[hi], p);
@@ -86,8 +129,6 @@ void solve() {
 	auto case1 = minkowski(twice(a), flip(b)); // middle a -> a = (b+c)/2 -> 2a = b+c -> 2a-b = c
 	auto case2 = minkowski(twice(b), flip(a)); // middle b -> b = (a+c)/2 -> 2b = a+c -> 2b-a = c
 	auto case3 = minkowski(a, b); // middle c -> c = (a+b)/2 -> 2c = a+b
-
-	db(case3);
 
 	string ans(n, 'N');
 	forn(i, n) {
