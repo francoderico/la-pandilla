@@ -2,8 +2,6 @@
 // representamos poligonos con vector<pt>
 // los poligonos son siempre contra-reloj
 
-const ld PI = acosl(-1);
-
 using Sc = ll; // scalar, asi se puede cambiar por double u otra cosa si hace falta
 struct pt { Sc x, y; };
 
@@ -13,7 +11,7 @@ pt girar(pt p) { return {-p.y, p.x}; }
 pt operator+ (pt const& a, pt const& b) { return {a.x + b.x, a.y + b.y}; } // suma
 pt operator- (pt const& a, pt const& b) { return {a.x - b.x, a.y - b.y}; } // diferencia
 pt operator* (Sc const& x, pt const& p) { return {x * p.x, x * p.y}; } // producto por un escalar
-bool operator<(pt const& a, pt const& b) { return a.x != b.x ? a.x < b.x : a.y < b.y; }
+bool operator<(pt const& a, pt const& b) { return a.y != b.y ? a.y < b.y : a.x < b.x; } // ordena por y, desempata en x
 bool operator==(pt const& a, pt const& b) { return a.x == b.x && a.y == b.y; }
 
 Sc det(pt const& a, pt const& b) { return a.x*b.y - a.y*b.x; } // determinante
@@ -54,6 +52,15 @@ auto por_angulo(pt const& a, pt const& b) {
 		if (d != 0) return d > 0;
 		return len_sq(x-a) < len_sq(y-a); // el mas corto primero
 	};
+}
+
+// Borra puntos consecutivos colineales
+void borrar_colineales(vector<pt>& a) {
+	int j = 1;
+	forr(i, 1, sz(a))
+		if (!en_recta(a[i], a[j-1], a[(i+1)%sz(a)]))
+			a[j++] = a[i];
+	a.resize(j);
 }
 
 // printear con cout / cerr
