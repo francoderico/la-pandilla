@@ -11,10 +11,10 @@ void dfs(int v){
 			parent[x] = v;
 			dfs(x);
 			if(low[x] >= tag[v]) art[v] = true;
-			low[v] = min(low[v], low[x]);
+			low[v]  = min(low[v], low[x]);
 		}
 		else low[v] = min(low[v], tag[x]); //NO es igual a la de arriba
-		if(low[x] <= tag[v]) /* La arista v-x no es bridge - pensar una representacion comoda */
+		if(low[x] <= tag[v]) /* La arista v-x NO es bridge - inicialmente todas lo son */
 	}
 }
 // LLena el array art - considera a los nodos de grado 0 como false
