@@ -31,12 +31,12 @@ const ld PI = acosl(-1);
 
 int n, m;
 
-// REQUISITO: int n; // numero de nodos
-struct Floyd { int g[MAXN][MAXN];
-	void init() { forn(i, n) forn(j, n) g[i][j] = i==j ? 0 : INF; }
+
+struct Floyd { int n; int g[MAXN][MAXN];
+	void init(int n_) { n = n_; forn(i, n) forn(j, n) g[i][j] = i==j ? 0 : INF; }
 	void add_edge(int u, int v, int w) { g[u][v] = min(g[u][v], w); }
 	void run() { // hace que g[u][v] sea = distancia u->v
-		forn(i, n) forn(j, n) forn(k, n) if (max(g[j][i], g[i][k]) < INF)
+		forn(i, n) forn(j, n) forn(k, n)
 			g[j][k] = min(g[j][k], g[j][i] + g[i][k]);
 	}
 	bool in_neg_cycle(int u) { return g[u][u] < 0; }
@@ -61,7 +61,7 @@ void solve() {
 	while (cin >> n >> m) {
 		cout << "Case " << test_id++ << ": ";
 
-	floyd.init();
+	floyd.init(n);
 
 	forn(i, m) {
 		int u, v, x; cin >> u >> v >> x;
