@@ -1,4 +1,4 @@
-ll phi(ll n, map<ll, int> &F){
+ll phi(ll n, map<ll, int> &F){ // Retorna los coprimos menores a `n`.
     ll ret = n;
     for(const auto &[p, _] : F) ret -= ret / p;
     return ret;
