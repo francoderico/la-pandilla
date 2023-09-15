@@ -78,10 +78,10 @@ ll rho(ll n) {
 	return d == n ? rho(n) : d;
 }
 
-void fact(ll n, map<ll, int>& fs) { // Agrega los factores de `n` en `fs`.
+void fact(ll n, map<ll, int>& F) { // Agrega los factores de `n` en `F`.
 	if (n == 1) return;
-	if (miller(n)) {fs[n]++; return;}
-	ll q = rho(n); fact(q, fs); fact(n / q, fs);
+	if (miller(n)) {F[n]++; return;}
+	ll q = rho(n); fact(q, F); fact(n / q, F);
 }
 //==============================================================================
 
