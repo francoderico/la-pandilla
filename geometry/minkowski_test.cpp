@@ -1,3 +1,14 @@
+// https://codeforces.com/gym/104252/problem/G
+
+#include <bits/stdc++.h>
+using namespace std;
+
+#define forr(i,a,b) for(int i=int(a);i<int(b);++i)
+#define forn(i,n) forr(i,0,n)
+#define sz(v) (int(v.size()))
+#define all(v) begin(v), end(v)
+
+typedef long long ll;
 
 // representamos poligonos con vector<pt>
 // los poligonos son siempre contra-reloj
@@ -5,13 +16,10 @@
 using Sc = ll; // scalar, asi se puede cambiar por double u otra cosa si hace falta
 struct pt { Sc x, y; };
 
-// rota un punto 90 grados contra-reloj respecto al origen
-pt girar(pt p) { return {-p.y, p.x}; }
-
 pt operator+ (pt const& a, pt const& b) { return {a.x + b.x, a.y + b.y}; } // suma
 pt operator- (pt const& a, pt const& b) { return {a.x - b.x, a.y - b.y}; } // diferencia
 pt operator* (Sc const& x, pt const& p) { return {x * p.x, x * p.y}; } // producto por un escalar
-bool operator<(pt const& a, pt const& b) { return a.y != b.y ? a.y < b.y : a.x < b.x; } // ordena por y, desempata en x
+bool operator<(pt const& a, pt const& b) { return a.y != b.y ? a.y < b.y : a.x < b.x; }
 bool operator==(pt const& a, pt const& b) { return a.x == b.x && a.y == b.y; }
 
 Sc det(pt const& a, pt const& b) { return a.x*b.y - a.y*b.x; } // determinante
@@ -25,8 +33,6 @@ bool ccw(pt const& o, pt const& a, pt const& b) { return det(a - o, b - o) > 0; 
 bool cw(pt const& o, pt const& a, pt const& b) { return det(a - o, b - o) < 0; }
 // responde si el punto o pertence a la recta ab
 bool en_recta(pt const& o, pt const& a, pt const& b) { return det(a-o, b-o) == 0; }
-// responde si el punto o pertence a la semirrecta ab
-bool en_semirrecta(pt const& o, pt const& a, pt const& b) { return det(a-o, b-o) == 0 && dot(a-o, b-o) >= 0; }
 
 // devuelve el cuadrante del angulo que
 // forma el punto x con la semirrecta ab
@@ -63,48 +69,85 @@ void borrar_colineales(vector<pt>& a) {
 	a.resize(j);
 }
 
-// printear con cout / cerr
-template<typename T> T& operator << (T& o, pt const& p) {
-	return o << "(" << p.x << ", " << p.y << ")";
+auto orden_radial = por_angulo(pt{0,0}, pt{1,0});
+
+vector<pt> offsets(vector<pt> const& a) {
+	vector<pt> da(sz(a));
+	forn(i, sz(a)-1) da[i] = a[i+1] - a[i];
+	da.back() = a[0] - a.back();
+	rotate(begin(da), min_element(all(da), orden_radial), end(da));
+	return da;
 }
 
-// recta definida por los x tal que dot(x,perp)==valor
-// osea perp es perpendicular a la recta
-struct linea {
-	pt perp; ll valor;
-	pt tang() const { return girar(perp); } // vector tangente
-	bool contiene(pt p) { return dot(perp, p) == valor; }
-};
+// Minkowski-sum of convex polygons
+vector<pt> minkowski(vector<pt> const& a, vector<pt> const& b) {
 
-vector<pt> chull(vector<pt> ps) {
-	auto it = min_element(all(ps));
-	iter_swap(it, ps.begin());
-	auto o = ps[0];
-	sort(ps.begin()+1, ps.end(), [&](pt const& a, pt const& b) {
-		if (det(a-o, b-o) == 0) return len_sq(a-o) < len_sq(b-o); // el mas corto primero
-		return ccw(o, a, b);
-	});
-	int j = 2;
-	forr(i,2,sz(ps)) {
-		while (j >= 2 && not ccw(ps[j-2], ps[j-1], ps[i])) j--;
-		ps[j++] = ps[i];
-	}
-	ps.resize(j);
-	return ps;
+	vector<pt> da = offsets(a), db = offsets(b);
+	vector<pt> dc(sz(da)+sz(db));
+	merge(all(da), all(db), begin(dc), orden_radial);
+
+	vector<pt> c(sz(dc));
+	c[0] = *min_element(all(a)) + *min_element(all(b));
+	forn(i, sz(c)-1) c[i+1] = c[i] + dc[i];
+
+	borrar_colineales(c);
+
+	return c;
 }
 
-// O(logN) -- solo poligonos convexos
-// incluye el borde
-// no debe haber puntos colineales consecutivos
-bool poligono_contiene(vector<pt> const& a, pt p) {
+vector<pt> twice(vector<pt> a) {
+	for (auto& p : a) p = 2*p;
+	return a;
+}
+
+vector<pt> flip(vector<pt> a) {
+	for (auto& p : a) p = (-1)*p;
+	return a;
+}
+
+bool poly_contains(vector<pt> const& a, pt p) {
 	if (cw(a[0], a[1], p)) return false;
 	if (ccw(a[0], a.back(), p)) return false;
 	int lo = 1;
 	int hi = sz(a)-1;
 	while (hi - lo > 1) {
 		int mi = (hi+lo)/2;
-		if (ccw(a[0], a[mi], p)) lo = mi;
+		if (!cw(a[0], a[mi], p)) lo = mi;
 		else                     hi = mi;
 	}
 	return !cw(a[lo], a[hi], p);
+}
+
+void solve() {
+	int m1; cin >> m1;
+	vector<pt> a(m1); forn(i, m1) cin >> a[i].x >> a[i].y;
+
+	int m2; cin >> m2;
+	vector<pt> b(m2); forn(i, m2) cin >> b[i].x >> b[i].y;
+
+	int n; cin >> n;
+	vector<pt> c(n); forn(i, n) cin >> c[i].x >> c[i].y;
+
+	auto case1 = minkowski(twice(a), flip(b)); // middle a -> a = (b+c)/2 -> 2a = b+c -> 2a-b = c
+	auto case2 = minkowski(twice(b), flip(a)); // middle b -> b = (a+c)/2 -> 2b = a+c -> 2b-a = c
+	auto case3 = minkowski(a, b); // middle c -> c = (a+b)/2 -> 2c = a+b
+
+	string ans(n, 'N');
+	forn(i, n) {
+		if (poly_contains(case1, c[i]) || poly_contains(case2, c[i]) || poly_contains(case3, 2*c[i])) {
+			ans[i] = 'Y';
+		}
+	}
+
+	cout << ans << "\n";
+}
+
+int main(){
+	//freopen("input.txt", "r", stdin);
+	//freopen("output.txt", "w", stdout);
+
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	solve();
 }
