@@ -1,13 +1,15 @@
-// Mas rapido que el de phi.
-// Si phi ya esta codeada y entra, o si pide exponente, usar esa.
-// Si no, USAR ESTA.
-ll inv(ll a, ll m){
-    //assert(gcd(a, m) == 1);
-    ll x = extended_euclid(a, m).fst;   //a*x + m*y = 1 => a*x=1(mod m)
-    return ((x % m) + m) % m;
+// Precalcula todos los inversos hasta MAXN
+ll inv[MAXN];
+void calc(){
+    inv[1] = 1;
+	forr(i, 2, MAXN) inv[i] = MOD - (MOD/i) * inv[MOD%i] % MOD;
 }
-
-// Usar solo si MAXN es muy grande y no puedo calcular todos en O(n)
+// Solo si MAXN es muy grande o MOD no es fijo. Mas rapido que el de phi.
+ll inv(ll a, ll m){ //assert(gcd(a, m) == 1);
+    auto [x, _] = extended_euclid(a, m);
+    return ((x % m) + m) % m; //a*x + m*y = 1 => a*x=1(mod m)
+}
+// Solo si phi ya esta codeado o si pide orden o similar.
 ll inv(ll a, ll m)
 {
     return expmod(a, phi(m)-1, m);  //Si m NO es primo (sacar a mano)
