@@ -1,20 +1,15 @@
-/// Return `a` such that `f(a) <= f(b)`, with integers `l <= a, b < r`.
-template<class Function>
-ll ternary_search_integer(ll l, ll r, Function f) {
-	while (r - l >= 3) {
-		const ll third = (r - l) / 3, m1 = l + third, m2 = r - third;
-		if (f(m1) > f(m2)) {l = m1 + 1;} else {r = m2;}
+// Minimo de `f` en `(l,r)`.
+template<class Fun>ll ternary(Fun f, ll l, ll r) {
+	for (ll d = r-l; d > 2; d = r-l) {
+		ll a = l + d/3, b = r - d/3;
+		if (f(a) > f(b)) l = a; else r = b;
 	}
-	if (r - l == 2 && f(l) > f(l + 1)) {++l;}
-	return l;
+	return l + 1;
 }
-
-/// Return `a` such that `f(a) <= f(b)`, with reals `l <= a, b < r`.
-template<class Function>
-double ternary_search_real(double l, double r, Function f, int iters=256){
+template<class Fun>double ternary(Fun f, double l, double r, int iters){
 	while (iters--) {
-		const double third = (r - l) / 3.0, m1 = l + third, m2 = r - third;
-		if (f(m1) > f(m2)) {l = m1;} else {r = m2;}
+		double d = r-l, a = l + d/3, b = r - d/3;
+		if (f(a) > f(b)) l = a; else r = b;
 	}
-	return l;
+	return (l+r)/2;
 }

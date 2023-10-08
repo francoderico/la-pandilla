@@ -12,11 +12,13 @@ using ll = long long;
 
 #include "ternary_search.hpp"
 
-double get_sum(const vector<int>& a, const double m, const double sign) {
-	const int n = sz(a);
+int n;
+vector<int> a;
+
+double sum(double m, double sign) {
 	vector<double> b(n, sign);
-	forn(i, n) {b[i] *= static_cast<double>(a[i]) + m;}
-	double curr = 0.0, best = 0.0;
+	forn(i, n) b[i] *= double(a[i]) + m;
+	double curr = 0, best = 0;
 	forn(i, n) {
 		curr = max(0.0, curr + b[i]);
 		best = max(best, curr);
@@ -25,16 +27,15 @@ double get_sum(const vector<int>& a, const double m, const double sign) {
 }
 
 void solve() {
-	cout<<fixed<<setprecision(numeric_limits<double>::max_digits10);
-	int n;
+	cout<<fixed<<setprecision(DECIMAL_DIG);
 	cin>>n;
-	vector<int> a(n);
-	forn(i, n) {cin>>a[i];}
-	const double l = -2e9, r = 2e9;
-	const auto f = [&](const double m) {
-		return max(get_sum(a, m, 1), get_sum(a, m, -1));
+	a.resize(n);
+	forn(i, n) cin>>a[i];
+	auto f = [&](double m) {
+		return max(sum(m, 1), sum(m, -1));
 	};
-	const double x = ternary_search_real(l, r, f, 128);
+	double l = -2e9, r = 2e9;
+	double x = ternary(f, l, r, 128);
 	cout<<f(x)<<'\n';
 }
 
