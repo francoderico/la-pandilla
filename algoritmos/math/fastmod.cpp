@@ -6,7 +6,6 @@ uint64_t mul128_u64(__uint128_t lowbits, uint64_t d) {
 	both_halves >>= 64;
 	return (uint64_t)both_halves;
 }
-
 __uint128_t computeM(uint64_t d) {
 	if (d < 0) d = -d;
 	__uint128_t M = UINT64_C(0xFFFFFFFFFFFFFFFF);
@@ -17,11 +16,8 @@ __uint128_t computeM(uint64_t d) {
 	M += ((d & (d - 1)) == 0 ? 1 : 0);
 	return M;
 }
-
 // computa (a % d) dado M precalculado
-// d tiene que estar en valor absoluto
-// ejemplo:
-//
+// d tiene que estar en valor absoluto. ejemplo:
 // __uint128_t M = computeM(MOD);
 // forn(i, n) c[i] = fastmod(a[i] + b[i], M, MOD);
 int64_t fastmod(int64_t a, __uint128_t M, int64_t positive_d) {
