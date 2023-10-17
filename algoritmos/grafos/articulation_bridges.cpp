@@ -1,7 +1,6 @@
 vector<int> g[MAXN];
 bool vis[MAXN], art[MAXN];  //art[i] = true sii i es de articulacion
-int low[MAXN], tag[MAXN];
-int parent[MAXN];	        //Inicializar en -1
+int low[MAXN], tag[MAXN], parent[MAXN]; //Inicializar en -1
 int idx = 0;
 void dfs(int v){
 	vis[v] = true;
@@ -17,8 +16,7 @@ void dfs(int v){
 		if(low[x] <= tag[v]) /* La arista v-x NO es bridge - inicialmente todas lo son */
 	}
 }
-// LLena el array art - considera a los nodos de grado 0 como false
-void articulation(){
+void articulation(){// LLena el array art - considera a los nodos de grado 0 como false
 	forn(v, n) if(not vis[v]){
 		dfs(v);
 		int hijos = 0;
