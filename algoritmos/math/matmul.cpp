@@ -1,16 +1,11 @@
-#include<vector>
-#include<cassert>
-
 #pragma GCC optimize("O3")
 #pragma GCC target("avx2,bmi,bmi2")
-
 struct matrix {
 	int n; vector<int> data;
 	matrix(int n_) : n(n_), data(n * n, 0) { }
 	int& operator()(int i, int j) { return data[i * n + j]; }
 	int size() { return n; }
 };
-
 matrix matmul(matrix& a, matrix& b) {
 	constexpr int s = 256;
 	assert(a.size() == b.size());
@@ -25,5 +20,3 @@ matrix matmul(matrix& a, matrix& b) {
 	}
 	return result;
 }
-
-
