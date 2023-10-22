@@ -6,7 +6,7 @@ using namespace std;
 
 #define sz(c) (int((c).size()))
 
-#include "lyndon_factorization.hpp"
+#include "lyndon.hpp"
 
 void solve() {
 	string s;
