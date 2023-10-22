@@ -9,7 +9,7 @@ using namespace std;
 #define sz(c) (int((c).size()))
 
 #include "string_functions.hpp"
-#include "knuth_morris_pratt.hpp"
+#include "kmp.hpp"
 
 vector<int> read(int m) {
 	vector<int> v;
