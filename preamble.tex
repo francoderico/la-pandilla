@@ -16,15 +16,15 @@
 \setlength{\columnsep}{0.25in}    % default=10pt
 \setlength{\columnseprule}{0.5pt}    % default=0pt (no line)
 
-\addtolength{\textheight}{2.35in}
-\addtolength{\topmargin}{-0.9in}     % ~ -0.5 del incremento anterior
+\addtolength{\textheight}{2.75in}
+\addtolength{\topmargin}{-1.1in}
 
-\addtolength{\textwidth}{1.1in}
-\addtolength{\oddsidemargin}{-0.55in} % -0.5 del incremento anterior
+\addtolength{\textwidth}{1.7in}
+\addtolength{\oddsidemargin}{-0.8in}
 
 \setlength{\headsep}{0.08in}
 \setlength{\parskip}{0in}
-\setlength{\headheight}{15pt}
+\setlength{\headheight}{12pt}
 \setlength{\parindent}{0mm}
 
 %%% Encabezado y pie de pagina
@@ -80,6 +80,16 @@
 \def\nbcoment#1{\begin{small}\textbf{#1}\end{small}}
 \newcommand{\comb}[2]{\left( \begin{array}{c} #1 \\ #2 \end{array}\right)}
 \def\complexity#1{\texorpdfstring{$\mathcal{O}(#1)$}{O(#1)}}
- \newcommand\cppfile[2][]{
-\lstinputlisting[style=C++,linerange={#1}]{#2}
-}
+
+
+% command cppfile(linerange, file)
+% Muestra las lineas dadas por 'linerange' en el archivo 'file'
+%
+% Ejemplos:
+%
+% \cppfile{9-10,15,20-22}{template.cpp}
+% muestra las lineas 9,10,15,20,21,22 de 'template.cpp'
+%
+% \cppfile{}{segtree.cpp}
+% muestra todas las lineas de 'segtree.cpp'
+\newcommand{\cppfile}[2]{ \lstinputlisting[style=C++,linerange={#1}]{#2} }
