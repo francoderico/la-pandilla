@@ -1,7 +1,7 @@
 ll phi(ll n, map<ll, int> &F){ // Retorna los coprimos menores a `n`.
-    ll ret = n;
-    for(const auto &[p, _] : F) ret -= ret / p;
-    return ret;
+	ll ret = n;
+	for(const auto &[p, _] : F) ret -= ret / p;
+	return ret;
 }
 // O(factorizar + lg^2 n)
 // Orden de a (mod m), es decir, el menor k tal que a^k = 1 (mod m)
