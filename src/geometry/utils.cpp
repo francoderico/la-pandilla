@@ -54,22 +54,20 @@ void borrar_consecutivos_colineales(vector<pt>& a) {
 	a.resize(j);
 }
 
-vector<pt> right_hull(vector<pt> ps) {
-	if (sz(ps) <= 3) return ps;
-	sort(all(ps)); int j=2;
-	forr(i,2,sz(ps)) {
-		while (j>=2 && !ccw(ps[j-2], ps[j-1], ps[i])) j--; // borra colineales
-		// while (j>=2 && cw(ps[j-2], ps[j-1], ps[i])) j--; // no borra
-		ps[j++] = ps[i];
-	} ps.resize(j); return ps;
+vector<pt> right_hull(vector<pt> a) {
+	sort(all(a)); int j = 2;
+	forr(i, 2, sz(a)) {
+		while (j >= 2 && !ccw(a[j-2], a[j-1], a[i])) j--; // borra colineales
+		// while (j >= 2 && cw(a[j-2], a[j-1], a[i])) j--; // no borra
+		a[j++] = a[i];
+	} a.resize(j); return a;
 }
 
-// O(NlogN) -- borra colineales (cambiar right_hull para no borrar)
-vector<pt> chull(vector<pt> ps) {
-	if (sz(ps) <= 3) return ps;
-	auto ls = right_hull(ps); for (auto& p : ps) p = -1 * p;
-	auto rs = right_hull(ps); for (auto& p : rs) p = -1 * p;
-	ls.pp(); rs.pp(); ls.insert(end(ls), all(rs)); return ls;
+vector<pt> chull(vector<pt> a) {
+	if (sz(a) < 3) return a;
+	auto r = right_hull(a); for (auto& p : a) p = -1 * p;
+	auto l = right_hull(a); for (auto& p : l) p = -1 * p;
+	r.pp(); l.pp(); r.insert(end(r), all(l)); return r;
 }
 
 // check point-in-poly O(logN) -- incluye el borde
