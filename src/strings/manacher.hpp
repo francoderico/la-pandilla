@@ -1,29 +1,15 @@
-/// Return two vectors `odd` and `even` such that `odd[i]` is the number of
-/// substring palindromes of odd length centered at position `i` and `even[i]`
-/// is the number of substring palindromes of even length centered at positions
-/// `i` and `i+1`.
-template<typename Char=char>
-pair<vector<int>, vector<int>> manacher(
-	const basic_string<Char>& word
-) {
-	if (word.empty()) {return {{}, {}};}
-	const int n = sz(word);
-	vector<int> odd(n), even(n - 1);
-	int l, r;
-	l = r = 0;
-	forn(i, n) {
-		int k = (r <= i) ? 1 : min(odd[l + r - i - 1], r - i);
-		while (0 <= i - k && i + k < n && word[i - k] == word[i + k]) {++k;}
-		odd[i] = k;
-		if (r < i + k) {l = i - k + 1, r = i + k;}
-	}
-	l = r = 0;
-	forn(i, n - 1) {
-		const int j = i + 1;
-		int k = (r <= j) ? 0 : min(even[l + r - i - 2], r - j);
-		while (0 <= i - k && j + k < n && word[i - k] == word[j + k]) {++k;}
-		even[i] = k;
-		if (r < j + k) {l = i - k + 1, r = j + k;}
-	}
-	return {odd, even};
-}
+struct manacher {
+	vector<int> p;
+	manacher(string const& s) {
+		int n = sz(s), m = 2*n+1, l = -1, r = 1;
+		vector<char> t(m); forn(i, n) {t[2*i+1] = s[i];} p.resize(m);
+		forr(i, 1, m) {
+			if (i < r) {p[i] = min(r-i, p[l+r-i]);}
+			while (p[i] <= i && i < m-p[i] && t[i-p[i]] == t[i+p[i]]) {++p[i];}
+			if (i+p[i] > r) {l = i-p[i], r = i+p[i];}
+		}
+	} // Retorna palindromos de la forma {comienzo, largo}.
+	auto at(int i) const {int k = p[i]-1; return pair{i/2-k/2, k};}
+	auto odd(int i) const {return at(2*i+1);} // Mayor centrado en s[i].
+	auto even(int i) const {return at(2*i);} // Mayor centrado en s[i-1,i].
+};

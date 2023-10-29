@@ -4,8 +4,8 @@
 
 using namespace std;
 
-#define forr(i,l,r) for(int i=int(l);i<int(r);++i)
-#define forn(i,n) forr(i,0,n)
+#define forn(i, n) forr(i, 0, n)
+#define forr(i, l, r) for (int i = int(l); i < int(r); ++i)
 #define sz(c) (int((c).size()))
 
 #include "manacher.hpp"
@@ -13,22 +13,18 @@ using namespace std;
 void solve() {
 	string s;
 	cin>>s;
-	const int n = sz(s);
-	const auto [odd, even] = manacher<char>(s);
-	int idx = 0, len = 0;
-	forn(i, n) {
-		const int curr = odd[i] * 2 - 1;
-		if (curr > len) {len = curr, idx = i - odd[i] + 1;}
+	manacher pals{s};
+	int n = sz(s), m = 2*n+1;
+	pair<int, int> best;
+	forn(i, m) {
+		auto curr = pals.at(i);
+		if (best.second < curr.second) {best = curr;}
 	}
-	forn(i, n - 1) {
-		const int curr = even[i] * 2;
-		if (curr > len) {len = curr, idx = i - even[i] + 1;}
-	}
-	cout<<s.substr(idx, len)<<'\n';
+	cout<<s.substr(best.first, best.second)<<'\n';
 }
 
 int main() {
-	ios_base::sync_with_stdio(false);
+	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
 	solve();
 }
