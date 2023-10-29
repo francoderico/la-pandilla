@@ -1,4 +1,4 @@
-// https://codeforces.com/gym/104114/problem/F
+// https://codeforces.com/gym/104064/problem/F
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -29,34 +29,30 @@ const ll MOD = 1e9+7;
 const ld EPS = 1e-9;
 const ld PI = acosl(-1);
 
-using Sc = ll; // scalar, asi se puede cambiar por double u otra cosa si hace falta
-struct pt { Sc x, y; };
 
-pt girar(pt p ) { return {-p.y, p.x}; }
+// representamos poligonos con vector<pt>. son siempre contra-reloj.
+// pt ("point") es un vector, sc ("scalar") es el tipo de sus componentes
+using sc = ll; struct pt { sc x, y; };
 
-pt operator+ (pt const& a, pt const& b) { return {a.x + b.x, a.y + b.y}; } // suma
-pt operator- (pt const& a, pt const& b) { return {a.x - b.x, a.y - b.y}; } // diferencia
-pt operator* (Sc const& x, pt const& p) { return {x * p.x, x * p.y}; } // producto por un escalar
-bool operator<(pt const& a, pt const& b) { return a.x != b.x ? a.x < b.x : a.y < b.y; }
-bool operator==(pt const& a, pt const& b) { return a.x == b.x && a.y == b.y; }
+// printear con cout / cerr
+ostream&operator<<(ostream&o,pt p){return o<<"("<<p.x<<", "<<p.y<<")";}
 
-Sc det(pt const& a, pt const& b) { return a.x*b.y - a.y*b.x; } // determinante
-Sc dot(pt const& a, pt const& b) { return a.x*b.x + a.y*b.y; } // producto escalar
-double len(pt const& p) { return hypot(p.x, p.y); } // modulo
-Sc len_sq(pt const& p) { return dot(p, p); } // modulo cuadrado
+pt girar(pt p) { return {-p.y, p.x}; } // rota 90 grados contra-reloj
+pt operator+(pt a, pt b) { return {a.x + b.x, a.y + b.y}; }
+pt operator-(pt a, pt b) { return {a.x - b.x, a.y - b.y}; }
+pt operator*(sc x, pt p) { return {x * p.x, x * p.y}; }
+pair<sc, sc> to_pair(pt p) { return {p.y, p.x}; }
+bool operator<(pt a, pt b) { return to_pair(a) < to_pair(b); }
+bool operator==(pt a, pt b) { return to_pair(a) == to_pair(b); }
+sc det(pt a, pt b) { return a.x*b.y - a.y*b.x; } // determinante
+sc dot(pt a, pt b) { return a.x*b.x + a.y*b.y; } // producto escalar
+double len(pt p) { return hypot(p.x, p.y); } // modulo
+sc len_sq(pt p) { return dot(p, p); } // modulo cuadrado
 
-bool ccw(pt const& o, pt const& a, pt const& b) { return det(a - o, b - o) > 0; } // responde si, centrado en o, ir de a hacia b es un giro contra-reloj
-bool cw(pt const& o, pt const& a, pt const& b) { return det(a - o, b - o) < 0; } // responde si, centrado en o, ir de a hacia b es un giro como el reloj
+// el giro a hacia b con centro en o es contra-reloj
+bool ccw(pt o, pt a, pt b) { return det(a-o, b-o) > 0; }
+bool cw(pt o, pt a, pt b) { return det(a-o, b-o) < 0; }
 
-template<typename T> T& operator << (T& o, pt const& p) { return o << "(" << p.x << ", " << p.y << ")"; } // printear con cout / cerr
-
-struct linea {
-	pt perp;
-	ll valor;
-
-	pt tang() const { return girar(perp); }
-	bool contiene(pt p) { return dot(perp, p) == valor; }
-};
 
 
 int ft[MAXN+1]; // for more dimensions, make ft multi-dimensional
@@ -182,4 +178,3 @@ int main(){
 
 	return 0;
 }
- 
