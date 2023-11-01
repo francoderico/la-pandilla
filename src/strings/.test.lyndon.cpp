@@ -4,18 +4,24 @@
 
 using namespace std;
 
+#define fore(e, c) for(auto const& e : (c))
 #define sz(c) (int((c).size()))
+#define fst first
+
+using pii = pair<int, int>;
 
 #include "lyndon.hpp"
 
 void solve() {
 	string s;
 	cin>>s;
-	cout<<smallest_cyclic_shift(s).first<<'\n';
+	int start = minrot(s);
+	auto rot = s.substr(start) + s.substr(0, start);
+	cout<<rot<<'\n';
 }
 
 int main() {
-	ios_base::sync_with_stdio(false);
+	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
 	solve();
 }
