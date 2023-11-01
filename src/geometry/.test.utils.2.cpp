@@ -29,32 +29,33 @@ const ll MOD = 1e9 + 7;
 const ld EPS = 1e-9;
 const ld PI = acosl(-1);
 
-using Sc = ll;
+// representamos poligonos con vector<pt>. son siempre contra-reloj.
+// pt ("point") es un vector, sc ("scalar") es el tipo de sus componentes
+using sc = ll; struct pt { sc x, y; };
 
-struct pt { Sc x, y; };
+pt girar(pt p) { return {-p.y, p.x}; } // rota 90 grados contra-reloj
+pt operator+(pt a, pt b) { return {a.x + b.x, a.y + b.y}; }
+pt operator-(pt a, pt b) { return {a.x - b.x, a.y - b.y}; }
+pt operator*(sc x, pt p) { return {x * p.x, x * p.y}; }
+pair<sc, sc> to_pair(pt p) { return {p.y, p.x}; }
+bool operator<(pt a, pt b) { return to_pair(a) < to_pair(b); }
+bool operator==(pt a, pt b) { return to_pair(a) == to_pair(b); }
+sc det(pt a, pt b) { return a.x*b.y - a.y*b.x; } // determinante
+sc dot(pt a, pt b) { return a.x*b.x + a.y*b.y; } // producto escalar
+double len(pt p) { return hypot(p.x, p.y); } // modulo
+sc len_sq(pt p) { return dot(p, p); } // modulo cuadrado
 
-ostream& operator<<(ostream& o, pt const& p) {
-	return o << "[" << p.x << " " << p.y << "]";
-}
+// el giro a hacia b con centro en o es contra-reloj
+bool ccw(pt o, pt a, pt b) { return det(a-o, b-o) > 0; }
+bool cw(pt o, pt a, pt b) { return det(a-o, b-o) < 0; }
 
-pt operator+(pt const& a, pt const& b) { return {a.x+b.x, a.y+b.y}; }
-pt operator-(pt const& a, pt const& b) { return {a.x-b.x, a.y-b.y}; }
-pt operator*(Sc const& x, pt const& p) { return {x*p.x, x*p.y}; }
-bool operator<(pt const& a, pt const& b) { return a.x!=b.x ? a.x<b.x : a.y<b.y; }
+bool en_recta(pt o, pt a, pt b) { return det(a-o, b-o) == 0; }
+bool en_semi(pt o,pt a,pt b){return det(a-o, b-o)==0 && dot(a-o,b-o)>=0;}
 
-Sc dot(pt const& a, pt const& b) { return a.x*b.x + a.y*b.y; }
-Sc det(pt const& a, pt const& b) { return a.x*b.y - a.y*b.x; }
-Sc len_sq(pt const& p) { return dot(p, p); }
-
-bool ccw(pt const& o, pt const& a, pt const& b) { return det(a-o, b-o) > 0; }
-bool  cw(pt const& o, pt const& a, pt const& b) { return det(a-o, b-o) < 0; }
-bool en_recta(pt const& o, pt const& a, pt const& b) { return det(a-o, b-o) == 0; }
-bool en_semirrecta(pt const& o, pt const& a, pt const& b) { return det(a-o, b-o) == 0 && dot(a-o, b-o) >= 0; }
-
-int cuadrante(pt const& a, pt const& b, pt const& x) {
+// cuadrante del angulo que forma el punto x con la semirrecta ab
+int cuadrante(pt a, pt b, pt x) {
 	pt d1 = b-a, d2 = x-a;
-	Sc det12 = det(d1, d2);
-	Sc dot12 = dot(d1, d2);
+	sc det12 = det(d1, d2), dot12 = dot(d1, d2);
 	if (det12 >= 0 && dot12 > 0) return 1;
 	if (det12 > 0 && dot12 <= 0) return 2;
 	if (det12 <= 0 && dot12 < 0) return 3;
@@ -62,34 +63,30 @@ int cuadrante(pt const& a, pt const& b, pt const& x) {
 	return -1;
 }
 
-auto por_angulo(pt const& a, pt const& b) {
-	return [=](pt const& x, pt const& y) {
-		int cx = cuadrante(a,b,x);
-		int cy = cuadrante(a,b,y);
+// comparador que ordena segun angulo alrededor de la recta ab
+auto por_angulo(pt a, pt b) {
+	return [=](pt x, pt y) {
+		int cx = cuadrante(a,b,x), cy = cuadrante(a,b,y);
 		if (cx != cy) return cx < cy;
-		Sc d = det(x-a, y-a);
-		if (d != 0) return d > 0;
-		return len_sq(x-a) < len_sq(y-a); // el mas corto primero
+		sc d = det(x-a, y-a);
+		return d != 0 ? d > 0 : len_sq(x-a) < len_sq(y-a); // mas corto antes
 	};
 }
 
-vector<pt> chull(vector<pt> ps) {
-	auto it = min_element(all(ps));
-	iter_swap(it, ps.begin());
-	auto o = ps[0];
-	sort(ps.begin()+1, ps.end(), [&](pt const& a, pt const& b) {
-		if (det(a-o, b-o) == 0) return len_sq(a-o) < len_sq(b-o); // el mas corto primero
-		return ccw(o, a, b);
-	});
-	int j = 2;
-	forr(i,2,sz(ps)) {
-		while (j >= 2 && not ccw(ps[j-2], ps[j-1], ps[i])) {
-			j--;
-		}
-		ps[j++] = ps[i];
-	}
-	ps.resize(j);
-	return ps;
+vector<pt> right_hull(vector<pt> a) {
+	sort(all(a)); int j = 2;
+	forr(i, 2, sz(a)) {
+		while (j >= 2 && !ccw(a[j-2], a[j-1], a[i])) j--; // borra colineales
+		// while (j >= 2 && cw(a[j-2], a[j-1], a[i])) j--; // no borra
+		a[j++] = a[i];
+	} a.resize(j); return a;
+}
+
+vector<pt> chull(vector<pt> a) {
+	if (sz(a) < 3) return a;
+	auto r = right_hull(a); for (auto& p : a) p = -1 * p;
+	auto l = right_hull(a); for (auto& p : l) p = -1 * p;
+	r.pp(); l.pp(); r.insert(end(r), all(l)); return r;
 }
 
 int solve_lado(pt q1, pt q2, vector<pt> const& ps) {
@@ -100,8 +97,8 @@ int solve_lado(pt q1, pt q2, vector<pt> const& ps) {
 
 	forn(i, sz(ps)) {
 		if (ccw(q2, q1, ps[i])) semip++;
-		if (en_semirrecta(q1, q1+(q1-q2), ps[i])) lado1++;
-		if (en_semirrecta(q2, q2+(q2-q1), ps[i])) lado2++;
+		if (en_semi(q1, q1+(q1-q2), ps[i])) lado1++;
+		if (en_semi(q2, q2+(q2-q1), ps[i])) lado2++;
 	}
 
 	return max(semip+lado1, semip+lado2);
@@ -111,8 +108,8 @@ int solve_angulo(pt q1, pt q2, pt q3, vector<pt> ps) {
 	auto en_region = [&](pt p) {
 		return cw(q2, q3, p)
 		    || ccw(q2, q1, p)
-		    || en_semirrecta(q2, q2+(q2-q1), p)
-		    || en_semirrecta(q2, q2+(q2-q3), p);
+		    || en_semi(q2, q2+(q2-q1), p)
+		    || en_semi(q2, q2+(q2-q3), p);
 	};
 
 	ps.erase(remove_if(all(ps), [&](pt p) { return not en_region(p); }), ps.end());
@@ -125,7 +122,7 @@ int solve_angulo(pt q1, pt q2, pt q3, vector<pt> ps) {
 		j = max(j, i+1);
 		for (; j < sz(ps); ++j) {
 			bool bueno = ccw(q2, ps[i], ps[j])
-			          || en_semirrecta(q2, ps[i], ps[j]);
+			          || en_semi(q2, ps[i], ps[j]);
 			if (!bueno) break;
 		}
 
@@ -164,7 +161,7 @@ void solve() {
 		int j = 0;
 		forn(i, sz(ps)) {
 			j = max(j, i+1);
-			while(j-i < n && j < 3*n && (cw(ps[i], q, ps[j%n]) || en_semirrecta(q, ps[i], ps[j%n]))) {
+			while(j-i < n && j < 3*n && (cw(ps[i], q, ps[j%n]) || en_semi(q, ps[i], ps[j%n]))) {
 				j++;
 			}
 			int cant = j-i;
@@ -203,3 +200,4 @@ int main () {
 
 	return 0;
 }
+
