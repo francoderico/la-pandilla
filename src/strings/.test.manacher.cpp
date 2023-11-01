@@ -8,17 +8,19 @@ using namespace std;
 #define forr(i, l, r) for (int i = int(l); i < int(r); ++i)
 #define sz(c) (int((c).size()))
 
+using pii = pair<int, int>;
+
 #include "manacher.hpp"
 
 void solve() {
 	string s;
 	cin>>s;
-	manacher pals{s};
+	Manacher pals{s};
 	int n = sz(s), m = 2*n+1;
 	pair<int, int> best;
 	forn(i, m) {
 		auto curr = pals.at(i);
-		if (best.second < curr.second) {best = curr;}
+		if (best.second < curr.second) best = curr;
 	}
 	cout<<s.substr(best.first, best.second)<<'\n';
 }
