@@ -8,6 +8,8 @@ using namespace std;
 #define sz(c) (int((c).size()))
 #define fst first
 
+using pii = pair<int, int>;
+
 #include "lyndon.hpp"
 
 void solve() {
