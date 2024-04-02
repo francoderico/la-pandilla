@@ -16,14 +16,8 @@ CD operator*(const CD& a, const CD& b){
 CD operator+(const CD& a, const CD& b) { return CD(a.r+b.r, a.i+b.i); }
 CD operator-(const CD& a, const CD& b) { return CD(a.r-b.r, a.i-b.i); }
 const double pi = acos(-1.0);
-/* NTT */ struct CD {
-	tf x;
-	CD(tf x_) : x(x_) {}
-	CD() {}
-};
-CD operator+(const CD& a, const CD& b) { return CD(addmod(a.x, b.x)); }
-CD operator-(const CD& a, const CD& b) { return CD(submod(a.x, b.x)); }
-CD operator*(const CD& a, const CD& b) { return CD(mulmod(a.x, b.x)); }
+/* NTT */ struct CD { tf x;     CD(tf x_) : x(x_) {}     CD() {}    };
+CD operator+(const CD& a, const CD& b) { return CD(addmod(a.x, b.x)); }//ETC
 vector<tf> rts(MAXN+9,-1);
 CD root(int n, bool inv){
 	tf r = rts[n]<0 ? rts[n] = expmod(RT,(MOD-1)/n) : rts[n];
@@ -34,9 +28,9 @@ int R[MAXN+9];
 void dft(CD* a, int n, bool inv){
 	forn(i, n) if(R[i] < i) swap(a[R[i]], a[i]);
 	for(int m = 2; m <= n; m *= 2){
-		// double z = 2*pi/m * (inv?-1:1); // FFT
-		// CD wi = CD(cos(z), sin(z)); // FFT
-		CD wi = root(m, inv); // NTT
+		/* FFT */ double z = 2*pi/m * (inv?-1:1);
+		/* FFT */ CD wi = CD(cos(z), sin(z));
+		/* NTT */ CD wi = root(m, inv);
 		for(int j = 0; j < n; j += m){
 			CD w(1);
 			for(int k = j, k2 = j+m/2; k2 < j+m; k++, k2++){
@@ -44,8 +38,8 @@ void dft(CD* a, int n, bool inv){
 			}
 		}
 	}
-	// if(inv) forn(i, n) a[i] /= n; // FFT
-	if(inv){ // NTT
+	/* FFT */ if(inv) forn(i, n) a[i] /= n;
+	/* NTT */ if(inv){
 		CD z(expmod(n, MOD-2));
 		forn(i, n) a[i] = a[i]*z;
 	}
@@ -64,7 +58,7 @@ poly multiply(poly& p1, poly& p2){
 	dft(cp1, m, true);
 	poly res;
 	n -= 2;
-	// forn(i, n) res.pb((tf)floor(cp1[i].real()+0.5)); // FFT
-	forn(i, n)res.pb(cp1[i].x); // NTT
+	/* FFT */ forn(i, n) res.pb((tf)floor(cp1[i].real()+0.5));
+	/* NTT */ forn(i, n)res.pb(cp1[i].x);
 	return res;
 }
