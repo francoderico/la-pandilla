@@ -21,7 +21,7 @@ typedef long double ld;
 typedef pair<int,int> pii;
 typedef pair<ll,ll> pll;
 
-const ll MAXN = 2e5+100;
+const ll MAXN = -1;
 const ll INF = 1e18+100;
 const ll MOD = 1e9+7;
 const ld EPS = 1e-9;
