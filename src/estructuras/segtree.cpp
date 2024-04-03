@@ -1,32 +1,18 @@
-struct Mono {
-	// TODO agregar data
-	static Mono zero() { /* TODO */ } // neutro de la suma
-};
-Mono operator+ (Mono a, Mono b) { /* TODO */ } // asociativo
-
+struct Mono { /* TODO */ static Mono zero() { /* TODO */ } };
+Mono operator+ (Mono a, Mono b) { /* TODO */ }
 struct Segtree {
-	static constexpr int log2n = 17; // TODO
-	static constexpr int len = 1<<log2n, sze = 1<<(log2n+1);
-	vector<Mono> data;
-	Segtree() : data(sze) { }
-
-	// inicia con los valores dados O(n+len)
-	void init(Mono* a, int n) {
-		forn(i, sze) data[i] = Mono::zero();
-		forn(i, n) data[i+len] = a[i];
+	int len; vector<Mono> data;
+	void init(Mono* a, int n) { assert(n>0); // O(n+len)
+		len=1<<(31-__builtin_clz(2*n-1));
+		data.assign(len*2, Mono::zero());
+		if (a) forn(i, n) data[i+len] = a[i];
 		dforr(i, 1, len) data[i] = data[i*2] + data[i*2+1];
 	}
-
-	// point update O(log(len))
 	void update(int i, Mono x) {
 		i += len; data[i] = x;
 		while (i /= 2) data[i] = data[i*2] + data[i*2+1];
 	}
-
-	// range query O(log(len))
 	Mono query(int l, int r) { ql = l; qr = r; return q_(1, 0, len); }
-
-private:
 	int ql, qr;
 	Mono q_(int i, int l, int r) {
 		if (r <= ql || qr <= l) return Mono::zero();
