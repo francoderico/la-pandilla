@@ -1,5 +1,4 @@
-vector<int> g[MAXN];
-bool vis[MAXN];
+vector<int> g[MAXN];     bool vis[MAXN];
 int low[MAXN], scc[MAXN];  //Inicializar en -1
 int idx = 0, cant = 0;
 stack<int> s;

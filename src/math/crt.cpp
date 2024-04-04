@@ -7,11 +7,11 @@ pll extended_euclid(ll a, ll b){
 	return {x, y};
 }
 // Genera las soluciones de a*x + b*y = r, con r multiplo del gcd
-pair<pll, pll> diophantine(ll a, ll b, ll r){ //assert(r%d == 0);
-	ll d = gcd(a, b);
+pair<pll, pll> diophantine(ll a, ll b, ll r){
+	ll d = gcd(a, b); //assert(r%d == 0);
 	a /= d; b /= d; r /= d;
 	auto [x, y] = extended_euclid(a, b);
-	return {{x*r, y*r}, {-b, a}};	// Soluciones: ans.fst + k * ans.snd para todo k
+	return {{x*r, y*r}, {-b, a}};	// Soluciones: ans.fst + k*ans.snd forall k
 }
 ll mod(ll a, ll m) { return (a%m + m) % m; }
 ll mod(__int128 a, ll m) { return (a%m + m) % m; }
@@ -23,8 +23,9 @@ pll sol(tuple<ll, ll, ll> c){
 	return sol(make_tuple(a/d, b/d, m/d));
 }
 // Dado un vector de condiciones {ai, bi, mi}, que son ai * x = bi (mod mi),
-// devuelve (x, mod) donde mod es el lcm de todos los modulos, o (-1, -1) si es inconsistente.
-// Asume que lcm entra en ll (se puede cambiar todo a __int128 si no, PERO NO A ull).
+// devuelve (x, mod) donde mod es el lcm de todos los modulos,
+// o (-1, -1) si es inconsistente.
+// Asume que lcm entra en ll (se puede cambiar a __int128, PERO NO A ull).
 pll crt(vector<tuple<ll, ll, ll>> cond){
 	ll x1 = 0, m1 = 1;
 	for(auto t : cond){
@@ -38,6 +39,5 @@ pll crt(vector<tuple<ll, ll, ll>> cond){
 	}
 	return sol(make_tuple(1, x1, m1));
 }
-// Uso:
-// cond.pb({mod(a, m), mod(b, m), m});
+// Uso: cond.pb({mod(a, m), mod(b, m), m});
 // auto [x, mod] = crt(cond);

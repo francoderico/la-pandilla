@@ -7,8 +7,7 @@ ll expmod(ll b, ll e, ll m) {
 	}
 	return ret;
 }
-
-bool miller(ll n) { // Determina si `n` es primo.
+bool miller(ll n) { // Determina si n es primo
 	if (n < 2) return false;
 	for (ll p : {2, 3, 5, 7, 11, 13, 17, 19}) if (n % p == 0) return n == p;
 	if (n < 529) return true;
@@ -30,7 +29,6 @@ bool miller(ll n) { // Determina si `n` es primo.
 		if (witness(b)) return false;
 	return true;
 }
-
 ll rho(ll n) {
 	if(n % 2 == 0) return 2;
 	ll x = 2, y = 2, d = 1;
@@ -43,8 +41,7 @@ ll rho(ll n) {
 	}
 	return d == n ? rho(n) : d;
 }
-
-void fact(ll n, map<ll, int>& F) { // Agrega los factores de `n` en `F`.
+void fact(ll n, map<ll, int>& F) { // Agrega los factores de n en F
 	if (n == 1) return;
 	if (miller(n)) {F[n]++; return;}
 	ll q = rho(n); fact(q, F); fact(n / q, F);

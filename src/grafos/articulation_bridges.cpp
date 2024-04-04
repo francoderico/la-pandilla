@@ -13,10 +13,10 @@ void dfs(int v){
 			low[v]  = min(low[v], low[x]);
 		}
 		else low[v] = min(low[v], tag[x]); //NO es igual a la de arriba
-		if(low[x] <= tag[v]) /* La arista v-x NO es bridge - inicialmente todas lo son */
+		if(low[x] <= tag[v]) //La arista v-x NO es bridge - al princip todas son
 	}
 }
-void articulation(){// LLena el array art - considera a los nodos de grado 0 como false
+void articulation(){//Llena el array art - los nodos de grado 0 son false
 	forn(v, n) if(not vis[v]){
 		dfs(v);
 		int hijos = 0;
