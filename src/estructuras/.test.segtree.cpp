@@ -1,4 +1,4 @@
-// CODEFORCES 101962 I
+// https://codeforces.com/gym/101962/problem/I
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -6,7 +6,7 @@ using namespace std;
 #define forn(i,n) forr(i,0,n)
 #define dforr(i,a,b) for(int i=int(b)-1;i>=int(a);--i)
 #define dforn(i,n) dforr(i,0,n)
-#define db(v) cerr<<#v" = "<<(v)<<'\n'
+#define db(v) cout<<#v" = "<<(v)<<'\n'
 #define vecp(v) cerr<<#v<<" = "; for(auto ee:v)cerr<<ee<<' '; cerr<<'\n'
 #define nn cout<<'\n'
 #define sz(v) (int(v.size()))
@@ -41,28 +41,19 @@ Mono operator+ (Mono a, Mono b) {
 } // asociativo
 
 struct Segtree {
-	static constexpr int log2n = 17; // TODO
-	static constexpr int len = 1<<log2n, sze = 1<<(log2n+1);
-	vector<Mono> data;
-	Segtree() : data(sze) { }
-
-	// inicia con los valores dados O(n+len)
-	void init(Mono* a, int n) {
-		forn(i, sze) data[i] = Mono::zero();
-		forn(i, n) data[i+len] = a[i];
+	int len; vector<Mono> data;
+	void init(Mono* a, int n) { // O(n+len)
+		assert(n>0);
+		len=1<<(31-__builtin_clz(2*n-1));
+		data.assign(len*2, Mono::zero());
+		if (a) forn(i, n) data[i+len] = a[i];
 		dforr(i, 1, len) data[i] = data[i*2] + data[i*2+1];
 	}
-
-	// point update O(log(len))
 	void update(int i, Mono x) {
 		i += len; data[i] = x;
 		while (i /= 2) data[i] = data[i*2] + data[i*2+1];
 	}
-
-	// range query O(log(len))
 	Mono query(int l, int r) { ql = l; qr = r; return q_(1, 0, len); }
-
-private:
 	int ql, qr;
 	Mono q_(int i, int l, int r) {
 		if (r <= ql || qr <= l) return Mono::zero();
