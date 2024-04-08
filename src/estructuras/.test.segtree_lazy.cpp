@@ -1,4 +1,4 @@
-// CODEFORCES 102346F
+// https://codeforces.com/gym/102346/problem/F
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -53,21 +53,16 @@ Mono operator+ (Mono a, Mono b) {
 
 
 struct SegtreeLazy {
-	static constexpr int log2n = 17; // TODO
-	static constexpr int len = 1<<log2n, sze = 1<<(log2n+1);
-	vector<Mono> data; vector<Lazy> lazy;
-	SegtreeLazy() : data(sze), lazy(sze) { }
-	void init(Mono* a, int n) { // inicia con los valores dados O(n+len)
-		forn(i, sze) data[i] = Mono::zero();
-		forn(i, sze) lazy[i] = Lazy::zero();
-		forn(i, n) data[i+len] = a[i];
+	int len; vector<Mono> data; vector<Lazy> lazy;
+	void init(Mono* a, int n) { assert(n>0); // O(n+len)
+        len=1<<(31-__builtin_clz(2*n-1));
+		data.assign(2*len, Mono::zero());
+		lazy.assign(2*len, Lazy::zero());
+		if (a) forn(i, n) data[i+len] = a[i];
 		dforr(i, 1, len) data[i] = data[i*2] + data[i*2+1];
 	}
-	// range update O(log(len))
 	void update(int l, int r, Lazy x) { ql = l; qr = r; u_(1, 0, len, x); }
-	// range query O(log(len))
 	Mono query(int l, int r) { ql = l; qr = r; return q_(1, 0, len); }
-private:
 	int ql, qr;
 	void p_(int i, int l, int r) {
 		if (lazy[i].is_zero()) return;
