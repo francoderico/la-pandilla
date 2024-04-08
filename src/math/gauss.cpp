@@ -1,4 +1,4 @@
-double reduce(vector<vector<double>> &a){  // returns determinant (solo tiene sentido si m == n)
+double reduce(vector<vector<double>> &a){  //Devuelve determinante si m == n
 	int m = sz(a), n = sz(a[0]);
 	int i = 0, j = 0;
 	double r = 1.0;

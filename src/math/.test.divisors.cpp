@@ -47,27 +47,21 @@ void fact(ll n, map<ll, int> &F)
 	if(n > 1) F[n] ++;
 }
 
-// Auxiliar, no llamar
-void divisores_aux(const map<ll, int> &F, vector<ll> &divs, map<ll, int>::iterator it, ll n = 1)
-{
-	if(it == F.begin()) divs.clear();
-	if(it == F.end()) { divs.pb(n); return; }
-	ll p = it->fst, k = it->snd; ++it;
-	forn(_, k+1) divisores_aux(F, divs, it, n), n *= p;
+void divs_aux(const map<ll, int>& F, vector<ll>& D,
+                    map<ll, int>::iterator it, ll n = 1){
+	if(it == F.end()) { D.pb(n); return; }
+	auto [p, k] = *(it ++);
+	forn(_, k+1) divs_aux(F, D, it, n), n *= p;
 }
-
-// Obtiene los divisores a partir de la factorizacion.
-// NO ESTA ORDENADO
-void divisores(map<ll, int> &F, vector<ll> &divs)
-{
-	divisores_aux(F, divs, F.begin());
+void divs(map<ll, int>& F, vector<ll>& D){	// NO ESTA ORDENADO
+	divs_aux(F, D, F.begin());
 }
 
 
 bool on[MAXN];
 int cant[MAXN];
 map<ll, int> F;
-vector<ll> divs;
+vector<ll> D;
 
 void add(int k)
 {
@@ -78,9 +72,9 @@ void add(int k)
 	}
 
 	fact(k, F);
-	divisores(F, divs);
+	D.clear(); divs(F, D);
 
-	for(auto d : divs) if(d != 1)
+	for(auto d : D) if(d != 1)
 	{
 		if(cant[d] > 0)
 		{
@@ -91,7 +85,7 @@ void add(int k)
 
 	on[k] = true;
 
-	for(auto d : divs) if(d != 1)
+	for(auto d : D) if(d != 1)
 	{
 		cant[d] = k;
 	}
@@ -108,11 +102,11 @@ void erase(int k)
 	}
 
 	fact(k, F);
-	divisores(F, divs);
+	D.clear(); divs(F, D);
 
 	on[k] = false;
 
-	for(auto d : divs) if(d != 1)
+	for(auto d : D) if(d != 1)
 	{
 		cant[d] = 0;
 	}

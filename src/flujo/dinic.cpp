@@ -3,12 +3,13 @@ struct Dinic{ // O(n^2 * m)
 	vector<int> dist, q, work; // dist: distancias desde S, sin ponderar
 	struct edge {int to, rev; ll f, cap;};
 	vector<vector<edge>> g; vector<ll> dd;
-	Dinic(int n_) : n(n_), dist(n_+2), q(n_+2), work(n_+2), g(n_+2), dd(n_+2) {} // Deja espacio para el min_cap
+	Dinic(int n_): n(n_), dist(n_+2), q(n_+2), work(n_+2), g(n_+2), dd(n_+2)
+	               {} // Deja espacio para el min_cap
 	void add_edge(int s, int t, ll cap, ll mincap = 0){
 		// assert(0 <= mincap and mincap <= cap);
 		dd[s] += mincap; dd[t] -= mincap;
-		g[s].pb((edge){t, sz(g[t]),   0, cap-mincap});
-		g[t].pb((edge){s, sz(g[s])-1, 0, 0}); // Residual: cap=0 y flujo negativo
+		g[s].pb({t, sz(g[t]),   0, cap-mincap});
+		g[t].pb({s, sz(g[s])-1, 0, 0}); // Residual: cap = 0 y flujo < 0
 	}
 	bool dinic_bfs(){
 		fill(all(dist), -1); dist[src] = 0;
@@ -46,6 +47,5 @@ struct Dinic{ // O(n^2 * m)
 			while(ll delta = dinic_dfs(src, INF)) result += delta;
 		}
 		return result;
-	}
-	// ll max_flow_min_cap(int s, int t) esta en el mcMF
+	} // ll max_flow_min_cap() esta en el mcMF
 };

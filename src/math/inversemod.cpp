@@ -1,5 +1,4 @@
-// Precalcula todos los inversos hasta MAXN
-ll inv[MAXN];
+ll inv[MAXN]; // Precalcula todos los inversos hasta MAXN
 void calc(){
 	inv[1] = 1;
 	forr(i, 2, MAXN) inv[i] = MOD - (MOD/i) * inv[MOD%i] % MOD;
@@ -12,5 +11,5 @@ ll inv(ll a, ll m){ //assert(gcd(a, m) == 1);
 // Solo si phi ya esta codeado o si pide orden o similar.
 ll inv(ll a, ll m){
 	return expmod(a, phi(m)-1, m);  //Si m NO es primo (sacar a mano)
-	return expmod(a, m-2, m);	   //Si m es primo
+	return expmod(a, m-2, m);	      //Si m es primo
 }
