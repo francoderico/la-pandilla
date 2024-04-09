@@ -8,6 +8,7 @@ using namespace std;
 #define forr(i,l,r) for(int i=int(l);i<int(r);++i)
 #define forn(i,n) forr(i,0,n)
 #define sz(c) (int((c).size()))
+#define pb push_back
 #define fst first
 #define snd second
 
@@ -18,13 +19,13 @@ void solve() {
 	cin>>s;
 	int q;
 	cin>>q;
-	AhoCorasick t;
+	AhoCorasick<char>t;
 	vector<pair<int,string>> queries(q);
 	forn(i, q) {
 		cin>>queries[i].fst>>queries[i].snd;
 		t.insert(queries[i].snd);
 	}
-	t.complete_automaton();
+	t.compute();
 	vector<vector<int>> matches = t.match(s);
 	forn(i, q) {
 		const auto& [k, p] = queries[i];

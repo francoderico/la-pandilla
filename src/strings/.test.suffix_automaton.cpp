@@ -8,6 +8,7 @@ using namespace std;
 #define forr(i,l,r) for(int i=int(l);i<int(r);++i)
 #define fore(e,c) for(const auto&e:(c))
 #define sz(c) (int((c).size()))
+#define pb push_back
 #define fst first
 #define snd second
 
@@ -26,7 +27,7 @@ void solve(const SuffixAutomaton<char>& sa) {
 		}
 	}
 	if (bestlen == -1) {cout<<"-1\n";}
-	else{cout<<sa.text.substr(start, bestlen)<<'\n';}
+	else{cout<<sa.txt.substr(start, bestlen)<<'\n';}
 }
 
 void solve() {
