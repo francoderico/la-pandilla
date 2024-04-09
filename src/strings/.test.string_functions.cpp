@@ -23,8 +23,8 @@ ostream& operator<<(ostream& os, const vector<Type>& v) {
 void solve() {
 	string s;
 	cin>>s;
-	cout<<z_function(s)<<'\n';
-	cout<<prefix_function(s)<<'\n';
+	cout<<zfun(s)<<'\n';
+	cout<<pfun(s)<<'\n';
 }
 
 int main() {

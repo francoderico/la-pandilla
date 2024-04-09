@@ -1,87 +1,52 @@
-/// Full Aho-Corasick automaton.
-///
-/// It works as a simple trie but with some extra structure that allows one to
-/// change branches in order to continue traversing the tree.
-template<typename Char=char>
-class AhoCorasick {
+template<class Char=char>struct AhoCorasick {
 	using str = basic_string<Char>;
-	/// Return a new state.
-	int create_state() {
-		terminal.emplace_back();
-		next.emplace_back();
-		return sz(terminal) - 1;
-	}
-public:
-	// Lenghts of each string ending at each state.
-	vector<vector<int>> terminal{{}};
-	// Trie transitions in the automaton.
-	vector<map<Char, int>> next{{}};
-	// Suffix and dictionary links. A suffix link for node `u` points to its
-	// longest proper suffix. A dictionary link for node `u` points to the first
-	// terminal state that can be reached using suffix links.
-	vector<int> suff, dict;
-	// Strings inserted into the automaton.
+	int state() { term.pb({}), next.pb({}); return sz(term) - 1; }
+	vector<vector<int>> term{{}}; // term[u] = lengths of each word ending at u
+	vector<map<Char, int>> next{{}}; // next[u] = transitions from u
+	vector<int> suff; // suff[u] = longest proper suffix of u
+	vector<int> dict; // dict[u] = 1st terminal state reached with suffix links
 	vector<str> words;
 	AhoCorasick() {}
-	AhoCorasick(const vector<str>& words) {
-		fore(word, words) {insert(word);}
-		complete_automaton();
-	}
-	/// Insert `word` into the automaton.
-	void insert(const str& word) {
-		assert(suff.empty());
+	AhoCorasick(vector<str>const& ws) { fore(w, ws) {insert(w);} compute(); }
+	void insert(str const& w) {
 		int curr = 0;
-		fore(c, word) {
-			if (!next[curr].count(c)) {next[curr][c] = create_state();}
+		fore(c, w) {
+			if (!next[curr].count(c)) {next[curr][c] = state();}
 			curr = next[curr].at(c);
 		}
-		terminal[curr].push_back(sz(words));
-		words.push_back(word);
+		term[curr].push_back(sz(words)), words.push_back(w);
 	}
-	/// Compute the suffix and dictionary links after all words were inserted.
-	///
-	/// This is only done once, after which no more strings can be inserted.
-	void complete_automaton() {
-		assert(suff.empty());
-		suff.resize(sz(terminal), -1);
-		dict.resize(sz(terminal), -1);
+	void compute() { /// Only call once after all words have been inserted.
+		suff.resize(sz(term), -1); dict.resize(sz(term), -1);
 		queue<int> q{{0}};
 		while (!q.empty()) {
-			const int curr = q.front();
-			q.pop();
+			int curr = q.front(); q.pop();
 			fore(edge, next[curr]) {
-				const auto [c, other] = edge;
-				int link = suff[curr];
-				while (link != -1 && !next[link].count(c)) {link = suff[link];}
-				if (link != -1) {suff[other] = next[link].at(c);}
-				else {suff[other] = 0;}
-				if (!terminal[suff[other]].empty()) {dict[other] = suff[other];}
+				auto [c, other] = edge; int link = suff[curr];
+				while (link >= 0 && !next[link].count(c)) {link = suff[link];}
+				if (link >= 0) {suff[other] = next[link].at(c);} else {suff[other] = 0;}
+				if (!term[suff[other]].empty()) {dict[other] = suff[other];}
 				else {dict[other] = dict[suff[other]];}
 				q.push(other);
 			}
 		}
 	}
-	/// Return a vector `matches` such that `matches[i]` contains the start of
-	/// each occurrence of `words[i]` in `text`.
-	///
-	/// This has to be run after all transitions have been computed.
-	vector<vector<int>> match(const str& text) const {
-		assert(!suff.empty());
-		vector<vector<int>> matches(sz(words));
-		fore(id, terminal[0]) {matches[id].push_back(0);}
+	vector<vector<int>> match(str const& txt) const {
+		vector<vector<int>> ms(sz(words));
+		fore(id, term[0]) {ms[id].push_back(0);}
 		int curr = 0, read = 0;
-		fore(c, text) {
+		fore(c, txt) {
 			++read;
 			while (curr != -1 && !next[curr].count(c)) {curr = suff[curr];}
 			if (curr != -1) {curr = next[curr].at(c);}
 			else {curr = 0;}
 			for (int link = curr; link != -1; link = dict[link]) {
-				fore(id, terminal[link]) {
-					const int start = read - sz(words[id]);
-					matches[id].push_back(start);
+				fore(id, term[link]) {
+					int start = read - sz(words[id]);
+					ms[id].push_back(start);
 				}
 			}
 		}
-		return matches;
+		return ms; // ms[i] = start of each occurrence of words[i] in txt
 	}
 };
