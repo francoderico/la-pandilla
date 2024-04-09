@@ -1,21 +1,17 @@
-// MAXN must be power of 2 !!
-// MOD-1 needs to be a multiple of MAXN !!
+// MAXN must be power of 2 !!, MOD-1 needs to be a multiple of MAXN !!
 typedef ll tf;
 typedef vector<tf> poly;
-// big mod and primitive root for NTT:
 //const tf MOD = 2305843009255636993, RT = 5;
 const tf MOD = 998244353, RT = 3;
 /* FFT */ struct CD {
 	double r, i;
 	CD(double r_ = 0, double i_ = 0) : r(r_), i(i_) {}
-	double real() const { return r; }
 	void operator/=(const int c) { r/=c, i/=c; }
 };
 CD operator*(const CD& a, const CD& b){
 	return CD(a.r*b.r-a.i*b.i, a.r*b.i+a.i*b.r);}
 CD operator+(const CD& a, const CD& b) { return CD(a.r+b.r, a.i+b.i); }
 CD operator-(const CD& a, const CD& b) { return CD(a.r-b.r, a.i-b.i); }
-const double pi = acos(-1.0);
 /* NTT */ struct CD { tf x;     CD(tf x_) : x(x_) {}     CD() {}    };
 CD operator+(const CD& a, const CD& b) { return CD(addmod(a.x, b.x)); }//ETC
 vector<tf> rts(MAXN+9,-1);
@@ -26,6 +22,7 @@ CD root(int n, bool inv){
 /* AMBOS */ CD cp1[MAXN+9], cp2[MAXN+9];
 int R[MAXN+9];
 void dft(CD* a, int n, bool inv){
+	double pi = acos(-1.0);
 	forn(i, n) if(R[i] < i) swap(a[R[i]], a[i]);
 	for(int m = 2; m <= n; m *= 2){
 		/* FFT */ double z = 2*pi/m * (inv?-1:1);
@@ -58,7 +55,7 @@ poly multiply(poly& p1, poly& p2){
 	dft(cp1, m, true);
 	poly res;
 	n -= 2;
-	/* FFT */ forn(i, n) res.pb((tf)floor(cp1[i].real()+0.5));
+	/* FFT */ forn(i, n) res.pb((tf)floor(cp1[i].r+0.5));
 	/* NTT */ forn(i, n)res.pb(cp1[i].x);
 	return res;
 }
