@@ -1,3 +1,4 @@
+// https://codeforces.com/problemset/problem/1237/D
 #include <bits/stdc++.h>
 using namespace std;
 #define forr(i,a,b) for(int i = int(a); i < int(b); ++i)
