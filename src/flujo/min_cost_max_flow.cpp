@@ -26,9 +26,9 @@ struct MCF { // O(n^2 * m^2), no se banca ciclos de costo negativo
 				q.pop();
 				if(d != prio[u]) continue;
 				forn(i, sz(g[u])){
-					edge& [v, _, f, cap, cost] = g[u][i];
+					auto& [v, _, f, cap, c] = g[u][i];
 					if(cap <= f) continue;
-					tc nprio = prio[u] + cost + pot[u] - pot[v];
+					tc nprio = prio[u] + c + pot[u] - pot[v];
 					if(prio[v] > nprio){
 						prio[v] = nprio;
 						q.push({nprio, v});
@@ -42,9 +42,9 @@ struct MCF { // O(n^2 * m^2), no se banca ciclos de costo negativo
 			tf df = min(curflow[t], INFFLOW-flow);
 			flow += df;
 			for(int v = t; v != s; v = prevnode[v]){
-				auto& [_, rev, f, cap, cost] = g[prevnode[v]][prevedge[v]];
+				auto& [_, rev, f, cap, c] = g[prevnode[v]][prevedge[v]];
 				f += df; g[v][rev].f -= df;
-				cost += df*cost;
+				cost += df*c;
 			}
 		}
 		return {flow, cost};
