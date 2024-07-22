@@ -42,7 +42,7 @@ struct MCF { // O(n^2 * m^2), no se banca ciclos de costo negativo
 			tf df = min(curflow[t], INFFLOW-flow);
 			flow += df;
 			for(int v = t; v != s; v = prevnode[v]){
-				auto& [_, rev, f, cap, cost] = g[prevnode[v]][prevedge[v]];
+				auto& [_, rev, f, cap, c] = g[prevnode[v]][prevedge[v]];
 				f += df; g[v][rev].f -= df;
 				cost += df*c;
 			}
