@@ -3,10 +3,10 @@
 //output calc(k): kth term mod MOD
 //example: {1,1} {2,1} a_n=2*a_(n-1)+a_(n-2); calc(3)=3 calc(10007)=71480733
 struct LinearRec{
-	typedef vector<int> vi;
-	nt n; vi terms, trans; vector<vi> bin;
-	vi add(vi &a, vi &b){
-		vi res(n*2+1);
+	typedef vector<ll> vll;
+	int n; vll terms, trans; vector<vll> bin;
+	vll add(vll &a, vll &b){
+		vll res(n*2+1);
 		forn(i, n+1) forn(j, n+1) res[i+j] = (res[i+j]+ll(a[i])*b[j])%MOD;
 		for(int i=2*n; i>n; --i){
 			forn(j, n) res[i-1-j] = (res[i-1-j]+ll(res[i])*trans[j])%MOD;
@@ -15,13 +15,13 @@ struct LinearRec{
 		res.erase(res.begin()+n+1, res.end());
 		return res;
 	}
-	LinearRec(vi &terms, vi &trans): terms(terms), trans(trans){
-		n=sz(trans); vi a(n+1); a[1]=1;
+	LinearRec(vll &terms, vll &trans): terms(terms), trans(trans){
+		n=sz(trans); vll a(n+1); a[1]=1;
 		bin.pb(a);
 		forr(i,1,LOG) bin.pb(add(bin[i-1], bin[i-1]));
 	}
 	int calc(int k){
-		vi a(n+1); a[0]=1;
+		vll a(n+1); a[0]=1;
 		forn(i, LOG) if((k>>i)&1) a=add(a, bin[i]);
 		int ret=0;
 		forn(i, n) ret = (ret+ll(a[i+1])*terms[i])%MOD;
