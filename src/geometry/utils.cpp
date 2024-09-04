@@ -15,8 +15,9 @@ bool operator<(pt a, pt b) { return to_pair(a) < to_pair(b); }
 bool operator==(pt a, pt b) { return to_pair(a) == to_pair(b); }
 sc det(pt a, pt b) { return a.x*b.y - a.y*b.x; } // determinante
 sc dot(pt a, pt b) { return a.x*b.x + a.y*b.y; } // producto escalar
-double len(pt p) { return hypot(p.x, p.y); } // modulo
 sc len_sq(pt p) { return dot(p, p); } // modulo cuadrado
+double len(pt p) { return sqrt(len_sq(p)); } // modulo
+pt unit(pt p) { return (1/len(p)) * p; } // versor asociado
 
 // el giro a hacia b con centro en o es contra-reloj
 bool ccw(pt o, pt a, pt b) { return det(a-o, b-o) > 0; }
