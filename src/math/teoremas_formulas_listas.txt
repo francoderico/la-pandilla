@@ -19,4 +19,3 @@ If g is a proot modulo p^k:
   then either g or g+p^k (whichever one is odd) is a proot mod 2p^k
 For a prime p the sum of its proots is congruent to mu(p-1) (mod p)
 For a prime p (with the exception of p = 3), the product of its proots is congruent to 1 (mod p)
-mu(ab) = mu(a) mu(b) whenever a and b are coprime

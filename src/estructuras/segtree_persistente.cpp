@@ -1,5 +1,3 @@
-#include<bits/stdc++.h>
-
 const int LOG2N  = 19; // ceil(log2(MAXN))
 const int STLEN = 1<<LOG2N;
 
@@ -16,8 +14,7 @@ struct N {
 };
 N empty_node(Mono::zero(), &empty_node, &empty_node);
 
-// optimizacion: >30% mas rapido que 'new N(x,l,r)'
-deque<N> st_alloc;
+deque<N> st_alloc; // optimizacion: >30% mas rapido que 'new N(x,l,r)'
 N* make_node(Mono x, N* l, N* r) {
 	st_alloc.emplace_back(x, l, r);
 	return &st_alloc.back();

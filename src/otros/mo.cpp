@@ -1,10 +1,8 @@
-
 struct Query {
 	int l,r;
 	int idx;
 	// ll ord; // para usar con el hilbert
 };
-
 
 // ordena las queries para responder en O((N+Q)*sqrt(N))
 void sort_queries_classic(vector<Query>& qs, int n) {
@@ -16,7 +14,6 @@ void sort_queries_classic(vector<Query>& qs, int n) {
 		// return a.r < b.r; // peor constante
 	});
 }
-
 
 ll inv_hilbert(int x, int y, int mid) {
 	ll acc = 0;
@@ -37,7 +34,6 @@ void sort_queries_hilbert(vector<Query>& qs, int n) {
 	forn(i, sz(qs)) qs[i].ord = inv_hilbert(qs[i].l, qs[i].r, 1<<lg);
 	sort(all(qs), [](Query const& a, Query const& b) { return a.ord < b.ord; });
 }
-
 
 void answer_queries(vector<Query> const& qs) {
 	// TODO iniciar estado
